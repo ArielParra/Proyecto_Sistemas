@@ -43,14 +43,14 @@ const int QUANTUM_SYSTEM = 2;
 
 // LAS FUNCIONES DE BUDDY SYSTEM
 // HABRAN DE MOMENTO 2, una sera dividir la memoria cuando un proceso se vaya a 
-// ejecutar, y la otra funcion servira para liberar la memoria y/o juntarla nuevamente
+// ejecutar, y la otra funcion servira para liberar la memoria y/o juntarla/liberarla nuevamente
 
 // Un Ejemplo rapido es que si tenemos que ejecutar un proceso de 490K
 // y tenemos una memoria de 1M, entonces la memoria se dividira en 2, y el proceso
 // tomara el bloque de memoria necesaria
 
 // A mi parecer deberan ser recursivas, ya que si el tamaño no es adecuado
-// se tendra que dividir mas y mas y mas, hasta el infinito y mas alla, mentira nomas hasta 32kb
+// se tendra que dividir mas y mas y mas, hasta el infinito y mas alla, mentira nomas hasta 32kb uwu
 
 
 // DIVIDIR MEMORIA
@@ -60,8 +60,8 @@ BLOQUE_DE_MEMORIA* dividirmemoria(int TAMAÑO_PEDIDO){
     return nullptr;
 }
 
-// JUNTAR MEMORIA
-void juntarmemoria(BLOQUE_DE_MEMORIA* bloque_de_memoria){
+// LIBERAR MEMORIA
+void liberarmemoria(BLOQUE_DE_MEMORIA* bloque_de_memoria){
 
    //rifense
 }
@@ -82,6 +82,7 @@ void PLANIFICADOR(){
         PROCESO ACTUAL = Cola_procesos.front();
 
         //aqui deberia de ir un if para comprobar si hay espacio en memoria
+        //esta seria la implementacion de buddy system en round robin :)
 
         //Elimino ese proceso usando su iterador
         Cola_procesos.erase(Cola_procesos.begin());
@@ -98,7 +99,7 @@ void PLANIFICADOR(){
             Cola_procesos.push_back(ACTUAL);
         }else{
             //Aqui ya acabo el proceso
-            //juntarmemoria(ACTUAL.bloque_memoria);
+            //liberarmemoria(ACTUAL.bloque_memoria);
              Cola_procesos.erase(Cola_procesos.begin());
         }
     }

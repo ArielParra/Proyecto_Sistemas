@@ -60,6 +60,7 @@ void juntarmemoria(BLOQUE_DE_MEMORIA* bloque_de_memoria){
    //rifense
 }
 
+// ESTE ES EL PLANIFICADOR ROUND ROBIN YA LISTO
 void PLANIFICADOR(){
 
     while(!Cola_procesos.empty()){
@@ -68,11 +69,13 @@ void PLANIFICADOR(){
         //Elimino ese proceso usando su iterador
         Cola_procesos.erase(Cola_procesos.begin());
 
+        //ESTA LINEA REPRESENTA QUE EL PROCESO SE ESTA EJECUTANDO
         ACTUAL.quantumproceso = ACTUAL.quantumproceso - QUANTUM_SYSTEM;
+
         //Front sirve para referirte a lo que esta dentro de esa casilla
         //Begin sirve para referirte a la casilla en si
 
-        //Si el proceso es mayor que es 0 quiere decir que todavia no ha acabado
+        //Si el proceso es mayor que 0 quiere decir que todavia no ha acabado
         if(ACTUAL.quantumproceso > 0){
             //Mando el proceso al final de la cola
             Cola_procesos.push_back(ACTUAL);

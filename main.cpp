@@ -9,6 +9,8 @@ Ariel Emilio Parra Martínez  ID: 280862
 
 #include <iostream>
 #include <vector>
+#include <time.h>
+
 using namespace std;
 
 //Esto representara un bloque de memoria en BUDDY SYSTEM
@@ -47,6 +49,10 @@ const int QUANTUM_SYSTEM = 2;
 // y tenemos una memoria de 1M, entonces la memoria se dividira en 2, y el proceso
 // tomara el bloque de memoria necesaria
 
+// A mi parecer deberan ser recursivas, ya que si el tamaño no es adecuado
+// se tendra que dividir mas y mas y mas, hasta el infinito y mas alla, mentira nomas hasta 32kb
+
+
 // DIVIDIR MEMORIA
 BLOQUE_DE_MEMORIA* dividirmemoria(int TAMAÑO_PEDIDO){
 
@@ -60,12 +66,23 @@ void juntarmemoria(BLOQUE_DE_MEMORIA* bloque_de_memoria){
    //rifense
 }
 
-// ESTE ES EL PLANIFICADOR ROUND ROBIN YA LISTO
+// ESTE ES EL PLANIFICADOR ROUND ROBIN
 void PLANIFICADOR(){
 
     while(!Cola_procesos.empty()){
+        
+        // sleep o usleep aqui, aunque quizas se maneje globalmente
+        // ya que el usuario podra modificiar la velocidad de la simulacion
+        // alomejor y ponemos que use las flechitas para aumentar o disminuir la velocidad, yo k se
+
+        // system(cls) o system(clear) aqui
+        // imprimir_procesos(); aqui
+          
         //Aqui inicializo el proceso actual, que sera el que esta al frente de la cola
         PROCESO ACTUAL = Cola_procesos.front();
+
+        //aqui deberia de ir un if para comprobar si hay espacio en memoria
+
         //Elimino ese proceso usando su iterador
         Cola_procesos.erase(Cola_procesos.begin());
 
@@ -81,12 +98,64 @@ void PLANIFICADOR(){
             Cola_procesos.push_back(ACTUAL);
         }else{
             //Aqui ya acabo el proceso
-            juntarmemoria(ACTUAL.bloque_memoria);
+            //juntarmemoria(ACTUAL.bloque_memoria);
+             Cola_procesos.erase(Cola_procesos.begin());
         }
     }
 }
+//Esta funcion genera un proceso aleatorio y cambia el id de los procesos para sumarlo en 1
+PROCESO generar_proceso(int& id_procesos){
+
+    //El tamaño limite de tamaño del proceso
+    int TAMAÑOmin = 50;
+    int TAMAÑOmax = 200;
+    //El tamaño limite del cuantum del proceso
+    int CUANTUMmin = 1;
+    int CUANTUMmax = 10;
+    
+    //Valor aleatorio del tamaño
+    int tamaño = TAMAÑOmin + rand() %(TAMAÑOmax - TAMAÑOmin +1);
+    
+    //Valor aleatorio del cuantum
+    int cuantum = CUANTUMmin + rand() %(CUANTUMmax - CUANTUMmin +1);
+
+    //Se genera el tamaño de bloque de memoria
+    BLOQUE_DE_MEMORIA* bloque_de_memoria;
+    bloque_de_memoria->tamaño = tamaño;
+    bloque_de_memoria->libre = true;
+    
+    //id incrementa
+    id_procesos +=1;
+
+    PROCESO proceso = {id_procesos,cuantum,bloque_de_memoria};
+
+    return proceso;
+}
+
+// Funcion para imprimir los procesos (se cambiara mas tarde si queremos gui)
+void imprimir_procesos(){
+    
+}
+
+// Aqui Imprimiremos como se vera la memoria, como ira dividiendo sus segmentos o juntandolos,etc
+void imprimir_memoria(){
+
+}
 
 int main(){
+   srand(time(NULL));  
+   //El id de los procesos
+   int id_procesos;
+
+   //Aqui un for rapidito donde genero 20 procesos aleatoriamente
+   for(int i=0;i<20;i++){
+     PROCESO proceso = generar_proceso(id_procesos);
+     Cola_procesos.push_back(proceso);
+   }
+   
+   //SIMULACION
+   //PLANIFICADOR();
+
 
    return 0;
 }

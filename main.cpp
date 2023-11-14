@@ -1,4 +1,4 @@
-@@ -1,12 +1,90 @@
+
 /* 
 Equipo 1 conformado por:
 Miguel Ángel Batres Luna     ID: 350553 

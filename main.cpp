@@ -2,7 +2,7 @@
 /* 
 Equipo 1 conformado por:
 Miguel Ángel Batres Luna     ID: 350553 
-Alan Gael Gallardo Jiménez   ID: 351914
+Juan Damián Ortega De Luna   ID: 228387
 Luis Ernesto López Cárdenas  ID: 350346 
 Ariel Emilio Parra Martínez  ID: 280862 
 */

@@ -25,6 +25,8 @@ struct PROCESO{
 vector<PROCESO> Cola_procesos;
 BLOQUE_DE_MEMORIA* MEMORIA;
 
+
+
 const int TAMAÑO_MEMORIA = 1024; // Tamaño total de la memoria
 
 void inicializarMemoria() {

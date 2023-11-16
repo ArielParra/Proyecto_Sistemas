@@ -22,6 +22,27 @@ struct BLOQUE_DE_MEMORIA {
     BLOQUE_DE_MEMORIA* izq;
     BLOQUE_DE_MEMORIA* der;
 };
+//Esto vendria siendo una estructura donde implementemos un arbol en la memoria
+struct NodoMemoria {
+    int tamanio;
+    bool libre;
+    NodoMemoria* left;
+    NodoMemoria* right;
+};
+
+//Crear la memoriaTipo arbol usando la estructura de arbol
+NodoMemoria* CreaArbol(int tamanio) {
+    NodoMemoria* nodo = new NodoMemoria;
+    nodo->tamanio = tamanio;
+    nodo->libre = true;
+    nodo->left = NULL;
+    nodo->right = NULL;
+    return nodo;
+}
+
+//Agregar una funcion que coloque el proceso en un nodo con su tamaño
+
+
 
 //Esto representara un proceso
 struct PROCESO{
@@ -197,6 +218,9 @@ int main(){
    inicializarMemoria();
 
    //El id de los procesos
+   MEMORIA.push_back({ 1024, true }); //al vector memoria, le agregamos las datos tamanio y libre
+   //Se inicia el arbol con izquierda y derecha en NULL
+   NodoMemoria* MemoriaArbol = CreaArbol(1024);
    int id_procesos;
 
    //Aqui un for rapidito donde genero 20 procesos aleatoriamente

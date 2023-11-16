@@ -62,27 +62,30 @@ Si si es, crea dos bloques hijos (izquierda y derecha) y actualiza el bloque act
 Luego, decide en cual de los bloques hijos asignar el espacio llamando recursivamente a dividirmemoria.
 Si el bloque no es lo suficientemente grande, simplemente marca el bloque como no libre y lo devuelve*/
 
-bool dividirmemoria(BLOQUE_DE_MEMORIA& bloque, int TAMAÑO_PEDIDO) {   
-    if (bloque->tamaño >= TAMAÑO_PEDIDO * 2) {
+bool dividirmemoria(BLOQUE_DE_MEMORIA& bloque, PROCESO actual) {   
+    if (bloque->tamaño >= actual->tamaño * 2) {
         // Crear dos bloques hijos
-        if(bloque-izq==nullptr){
+        if(bloque->izq==nullptr){
             bloque->izq = new BLOQUE_DE_MEMORIA{ bloque->tamaño / 2, true, nullptr, nullptr };}
-        if(bloque-der==nullptr){
+        if(bloque->der==nullptr){
             bloque->der = new BLOQUE_DE_MEMORIA{ bloque->tamaño / 2, true, nullptr, nullptr };}
 
         // Actualizar el bloque actual
-        bloque->tamaño /= 2;                     // -> esta no creo que se ocupe
+        bloque->tamaño /= 2;              
         bloque->libre = false;
 
         // Es para decidir en cual de los bloques hijos se va a asignar la memoria
-        if (TAMAÑO_PEDIDO <= bloque->izq->tamaño && bloque.libre==true) {
-            return dividirmemoria(bloque->izq, TAMAÑO_PEDIDO);
-        } else if(bloque.libre==true){
-            return dividirmemoria(bloque->der, TAMAÑO_PEDIDO);
-        } else if(bloque.libre==true)
+        if (TAMAÑO_PEDIDO <= bloque->izq->tamaño && bloque->libre==true) {
+            return dividirmemoria(bloque->izq, actual->tamaño);
+        } else if(bloque->libre==true){
+            return dividirmemoria(bloque->der, actual->tamaño);
+        } else if{
+            return false;
+        }
     } else {
         bloque->libre = false;
-        return bloque;
+        bloque->idprocesoqueocupa = actual->idproceso;
+        return true;
     }
 }
 
@@ -92,19 +95,25 @@ Recibe un puntero al bloque que se va a liberar, luego marca el bloque como libr
 Luego, entra en un bucle que fusiona bloques libres que estan juntos. Si ambos bloques hijos estan libres, fusiona el bloque actual con su hermano, duplica su tamaño 
 y mueve el puntero al bloque padre
 El bucle continua hasta que no se pueden fusionar mas bloques o hasta llegar a la raiz del arbol */
-void liberarmemoria(BLOQUE_DE_MEMORIA* bloque) {
-    bloque->libre = true;
-
-    // Fusionar bloques libres que estan juntos
-    while (bloque->izq != nullptr && bloque->der != nullptr &&
-           bloque->izq->libre && bloque->der->libre) {
-        // Fusionar con el bloque hermano
-        bloque->izq = nullptr;
-        bloque->der = nullptr;
-        bloque->tamaño *= 2;
-
-        // Mover al bloque padre
-        bloque = bloque->izq;
+void liberarmemoria(BLOQUE_DE_MEMORIA* bloque, PROCESO actual) {
+    
+    if(bloque->izq->idprocesoqueocupa == actual->idproceso){
+        bloque->izq->libre = true;
+        if(bloque->der->libre == true){
+            bloque->izq = nullptr;
+            bloque->der = nullptr;
+            bloque->tamaño *= 2;
+        }
+    }else if(bloque->der->idprocesoqueocupa == actual->idproceso){
+        bloque->der->libre = true;
+        if(bloque->izq->libre == true){
+            bloque->izq = nullptr;
+            bloque->der = nullptr;
+            bloque->tamaño *= 2;
+        }
+    }else if{
+        liberarmemoria(bloque->izq,actual);
+        liberarmemoria(bloque->der,actual);
     }
 }
 
@@ -128,7 +137,7 @@ void PLANIFICADOR(){
         //esta seria la implementacion de buddy system en round robin :)
         PROCESO ACTUAL = Cola_procesos.front();
 
-        if(dividirmemoria(MEMORIA,ACTUAL.tamaño) == true){
+        if(dividirmemoria(MEMORIA,ACTUAL) == true){
          
         //Elimino ese proceso usando su iterador
         Cola_procesos.erase(Cola_procesos.begin());
@@ -150,7 +159,6 @@ void PLANIFICADOR(){
         }
              
         }else{
-
            //Avanza al siguiente en la lista de procesos
            if(++it == Cola_procesos.end()){
              it = Cola_procesos.begin();

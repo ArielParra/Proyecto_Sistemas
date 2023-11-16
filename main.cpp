@@ -8,6 +8,7 @@ using namespace std;
 struct BLOQUE_DE_MEMORIA {
     int tamaño;
     bool libre;
+    int idprocesoqueocupa;
     BLOQUE_DE_MEMORIA* izq;
     BLOQUE_DE_MEMORIA* der;
 };
@@ -30,7 +31,7 @@ BLOQUE_DE_MEMORIA* MEMORIA;
 const int TAMAÑO_MEMORIA = 1024; // Tamaño total de la memoria
 
 void inicializarMemoria() {
-    MEMORIA = new BLOQUE_DE_MEMORIA{ TAMAÑO_MEMORIA, true, nullptr, nullptr };
+    MEMORIA = new BLOQUE_DE_MEMORIA{ TAMAÑO_MEMORIA, true, nullptr, nullptr, nullptr };
 }
 //Representara la memoria, cabe destacar, que la memoria NO ES DINAMICA
 //La memoria TIENE TAMAÑO FIJO, pero se dividira en segmentos
@@ -64,19 +65,21 @@ Si el bloque no es lo suficientemente grande, simplemente marca el bloque como n
 bool dividirmemoria(BLOQUE_DE_MEMORIA& bloque, int TAMAÑO_PEDIDO) {   
     if (bloque->tamaño >= TAMAÑO_PEDIDO * 2) {
         // Crear dos bloques hijos
-        bloque->izq = new BLOQUE_DE_MEMORIA{ bloque->tamaño / 2, true, nullptr, nullptr };
-        bloque->der = new BLOQUE_DE_MEMORIA{ bloque->tamaño / 2, true, nullptr, nullptr };
+        if(bloque-izq==nullptr){
+            bloque->izq = new BLOQUE_DE_MEMORIA{ bloque->tamaño / 2, true, nullptr, nullptr };}
+        if(bloque-der==nullptr){
+            bloque->der = new BLOQUE_DE_MEMORIA{ bloque->tamaño / 2, true, nullptr, nullptr };}
 
         // Actualizar el bloque actual
         bloque->tamaño /= 2;                     // -> esta no creo que se ocupe
         bloque->libre = false;
 
         // Es para decidir en cual de los bloques hijos se va a asignar la memoria
-        if (TAMAÑO_PEDIDO <= bloque->izq->tamaño) {
+        if (TAMAÑO_PEDIDO <= bloque->izq->tamaño && bloque.libre==true) {
             return dividirmemoria(bloque->izq, TAMAÑO_PEDIDO);
-        } else {
+        } else if(bloque.libre==true){
             return dividirmemoria(bloque->der, TAMAÑO_PEDIDO);
-        }
+        } else if(bloque.libre==true)
     } else {
         bloque->libre = false;
         return bloque;

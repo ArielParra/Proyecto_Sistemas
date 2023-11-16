@@ -16,7 +16,7 @@ struct BLOQUE_DE_MEMORIA {
 struct PROCESO{
     int idproceso; // su id
     int quantumproceso; // el tiempo en que tardara en terminarse
-    BLOQUE_DE_MEMORIA* bloque_memoria; // Un apuntador al bloque de memoria asignado
+    int tamaño; // Un apuntador al bloque de memoria asignado
 };
 
 //VECTORES
@@ -61,14 +61,14 @@ Si si es, crea dos bloques hijos (izquierda y derecha) y actualiza el bloque act
 Luego, decide en cual de los bloques hijos asignar el espacio llamando recursivamente a dividirmemoria.
 Si el bloque no es lo suficientemente grande, simplemente marca el bloque como no libre y lo devuelve*/
 
-BLOQUE_DE_MEMORIA* dividirmemoria(BLOQUE_DE_MEMORIA* bloque, int TAMAÑO_PEDIDO) {
+bool dividirmemoria(BLOQUE_DE_MEMORIA& bloque, int TAMAÑO_PEDIDO) {   
     if (bloque->tamaño >= TAMAÑO_PEDIDO * 2) {
         // Crear dos bloques hijos
         bloque->izq = new BLOQUE_DE_MEMORIA{ bloque->tamaño / 2, true, nullptr, nullptr };
         bloque->der = new BLOQUE_DE_MEMORIA{ bloque->tamaño / 2, true, nullptr, nullptr };
 
         // Actualizar el bloque actual
-        bloque->tamaño /= 2;
+        bloque->tamaño /= 2;                     // -> esta no creo que se ocupe
         bloque->libre = false;
 
         // Es para decidir en cual de los bloques hijos se va a asignar la memoria
@@ -123,6 +123,8 @@ void PLANIFICADOR(){
         //aqui deberia de ir un if para comprobar si hay espacio en memoria
         //esta seria la implementacion de buddy system en round robin :)
 
+        if(dividirmemoria == true){
+
         //Elimino ese proceso usando su iterador
         Cola_procesos.erase(Cola_procesos.begin());
 
@@ -141,7 +143,9 @@ void PLANIFICADOR(){
             //liberarmemoria(ACTUAL.bloque_memoria);
              Cola_procesos.erase(Cola_procesos.begin());
         }
-    }
+        }
+        Cola_procesos.front()+1 = ACTUAL;
+        }
 }
 //Esta funcion genera un proceso aleatorio y cambia el id de los procesos para sumarlo en 1
 PROCESO generar_proceso(int& id_procesos){

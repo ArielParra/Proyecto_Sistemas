@@ -107,7 +107,8 @@ void liberarmemoria(BLOQUE_DE_MEMORIA* bloque) {
 
 // ESTE ES EL PLANIFICADOR ROUND ROBIN
 void PLANIFICADOR(){
-
+    //inicializo el begin de la cola de procesos
+    int it = Cola_procesos.begin(); 
     while(!Cola_procesos.empty()){
         
         // sleep o usleep aqui, aunque quizas se maneje globalmente
@@ -118,13 +119,14 @@ void PLANIFICADOR(){
         // imprimir_procesos(); aqui
           
         //Aqui inicializo el proceso actual, que sera el que esta al frente de la cola
-        PROCESO ACTUAL = Cola_procesos.front();
+       
 
         //aqui deberia de ir un if para comprobar si hay espacio en memoria
         //esta seria la implementacion de buddy system en round robin :)
+        PROCESO ACTUAL = Cola_procesos.front();
 
-        if(dividirmemoria == true){
-
+        if(dividirmemoria(MEMORIA,ACTUAL.tamaño) == true){
+         
         //Elimino ese proceso usando su iterador
         Cola_procesos.erase(Cola_procesos.begin());
 
@@ -143,9 +145,15 @@ void PLANIFICADOR(){
             //liberarmemoria(ACTUAL.bloque_memoria);
              Cola_procesos.erase(Cola_procesos.begin());
         }
+             
+        }else{
+
+           //Avanza al siguiente en la lista de procesos
+           if(++it == Cola_procesos.end()){
+             it = Cola_procesos.begin();
+           }
         }
-        Cola_procesos.front()+1 = ACTUAL;
-        }
+    }
 }
 //Esta funcion genera un proceso aleatorio y cambia el id de los procesos para sumarlo en 1
 PROCESO generar_proceso(int& id_procesos){

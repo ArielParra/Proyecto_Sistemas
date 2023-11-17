@@ -25,7 +25,7 @@ struct PROCESO{
 //Esto representara la cola de procesos
 vector<PROCESO> Cola_procesos;
 BLOQUE_DE_MEMORIA* MEMORIA;
-
+vector<int> memoria;
 
 
 const int TAMAÑO_MEMORIA = 1024; // Tamaño total de la memoria
@@ -111,7 +111,7 @@ void liberarmemoria(BLOQUE_DE_MEMORIA* bloque, PROCESO actual) {
             bloque->der = nullptr;
             bloque->tamaño *= 2;
         }
-    }else if{
+    }else if(bloque->izq!=nullptr && bloque->der!=nullptr){
         liberarmemoria(bloque->izq,actual);
         liberarmemoria(bloque->der,actual);
     }
@@ -126,7 +126,11 @@ void PLANIFICADOR(){
         // sleep o usleep aqui, aunque quizas se maneje globalmente
         // ya que el usuario podra modificiar la velocidad de la simulacion
         // alomejor y ponemos que use las flechitas para aumentar o disminuir la velocidad, yo k se
-
+        system(clear);
+        memoria.clear();
+        llenarvector(MEMORIA,96,true,false);
+        imprimir_memoria();
+        imprimir_procesos();
         // system(cls) o system(clear) aqui
         // imprimir_procesos(); aqui
           
@@ -154,7 +158,7 @@ void PLANIFICADOR(){
             Cola_procesos.push_back(ACTUAL);
         }else{
             //Aqui ya acabo el proceso
-            //liberarmemoria(ACTUAL.bloque_memoria);
+            liberarmemoria(ACTUAL.bloque_memoria);
              Cola_procesos.erase(Cola_procesos.begin());
         }
              
@@ -194,15 +198,44 @@ PROCESO generar_proceso(int& id_procesos){
 
     return proceso;
 }
+void imprimir_memoria(){
+   bool imprimir;
+   int i,j;
+   for(i=1;i<=96;i++){
+      for(j=0;j<memoria.end();j++){
+         (memoria[j]==i) ? imprimir = false : imprimir true;
+      }
+      (imprimir) ? cout << "█" : cout <<" ";
+   }
 
+}
 // Funcion para imprimir los procesos (se cambiara mas tarde si queremos gui)
 void imprimir_procesos(){
-    
+    for(int i=Cola_procesos.begin();i<Cola_procesos.end();i++){
+        PROCESO actual = Cola_procesos.front();
+        cout << "Proceso "<<actual.idproceso<< " ("<<actual.tamaño<<","<<actual.quantumproceso<<") "<<endl;
+    }
 }
 
 // Aqui Imprimiremos como se vera la memoria, como ira dividiendo sus segmentos o juntandolos,etc
-void imprimir_memoria(){
-
+void llenarvector(BLOQUE_DE_MEMORIA* bloque,int tamañototal,bool izq,bool der){
+   int tamaño;
+   if(izq==true){
+       if(bloque->izq!=nullptr && bloque->der!=nullptr){
+          tamaño = tamañototal/2;
+          memoria.push_back(tamaño);
+          imprimir_memoria(bloque->izq,tamañototal,true,false);
+          imprimir_memoria(bloque->der,tamañototal,false,true);
+       }
+   }
+   if(der==true){
+        if(bloque->izq!=nullptr && bloque->der!=nullptr){
+          tamaño = tamaño + (tamañototal/2);
+          memoria.push_back(tamaño);
+          imprimir_memoria(bloque->izq,tamañototal,true,false);
+          imprimir_memoria(bloque->der,tamañototal,false,true);
+        }
+   }
 }
 
 int main(){
@@ -218,7 +251,7 @@ int main(){
      PROCESO proceso = generar_proceso(id_procesos);
      Cola_procesos.push_back(proceso);
    }
-   
+   PLANIFICADOR();
    //SIMULACION
    //PLANIFICADOR();
 

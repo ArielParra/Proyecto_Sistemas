@@ -27,6 +27,7 @@ struct PROCESO{
 vector<PROCESO> Cola_procesos;
 BLOQUE_DE_MEMORIA* MEMORIA;
 vector<int> memoria;
+vector<PROCESO> Cola_lista;
 
 
 const int TAMAÑO_MEMORIA = 1024; // Tamaño total de la memoria
@@ -64,20 +65,18 @@ Luego, decide en cual de los bloques hijos asignar el espacio llamando recursiva
 Si el bloque no es lo suficientemente grande, simplemente marca el bloque como no libre y lo devuelve*/
 
 bool dividirmemoria(BLOQUE_DE_MEMORIA* bloque, PROCESO* actual) {   
-    if (bloque->tamaño >= actual->tamaño * 2) {
+    if (actual->tamaño <= (bloque->tamaño/2)) {
         // Crear dos bloques hijos
         if(bloque->izq==nullptr && bloque->der==nullptr){
             bloque->izq = new BLOQUE_DE_MEMORIA{ bloque->tamaño / 2, true, 0, nullptr,nullptr };
             bloque->der = new BLOQUE_DE_MEMORIA{ bloque->tamaño / 2, true, 0, nullptr,nullptr };
-            // Actualizar el bloque actual
-            bloque->tamaño /= 2;              
+            // Actualizar el bloque actual             
             bloque->libre = false;
         }
-
         // Es para decidir en cual de los bloques hijos se va a asignar la memoria
-        if (actual->tamaño <= bloque->izq->tamaño && bloque->izq->libre==true) {
+        if ((actual->tamaño <= bloque->izq->tamaño) && bloque->izq->libre==true) {
             return dividirmemoria(bloque->izq, actual);
-        } else if(actual->tamaño <= bloque->izq->tamaño && bloque->der->libre==true){
+        } else if((actual->tamaño <= bloque->izq->tamaño) && bloque->der->libre==true){
             return dividirmemoria(bloque->der, actual);
         } else{
             return false;
@@ -140,8 +139,6 @@ void imprimir_procesos(){
     cout << "Proceso " << actual.idproceso << " (" << actual.tamaño << "," << actual.quantumproceso << ") " << endl;
    }
 }
-
-// Aqui Imprimiremos como se vera la memoria, como ira dividiendo sus segmentos o juntandolos,etc
 void llenarvector(BLOQUE_DE_MEMORIA* bloque,int tamañototal,bool izq,bool der){
    int tamaño;
    if(izq==true){
@@ -161,72 +158,15 @@ void llenarvector(BLOQUE_DE_MEMORIA* bloque,int tamañototal,bool izq,bool der){
         }
    }
 }
-// ESTE ES EL PLANIFICADOR ROUND ROBIN
-void PLANIFICADOR(){
-    //inicializo el begin de la cola de procesos
-    auto it = Cola_procesos.begin(); 
-    while(!Cola_procesos.empty()){
-        
-        // sleep o usleep aqui, aunque quizas se maneje globalmente
-        // ya que el usuario podra modificiar la velocidad de la simulacion
-        // alomejor y ponemos que use las flechitas para aumentar o disminuir la velocidad, yo k se
-        system("clear");
-        memoria.clear();
-        llenarvector(MEMORIA,96,true,false);
-        imprimir_memoria();
-        imprimir_procesos();
-        sleep(2.);
-        // system(cls) o system(clear) aqui
-        // imprimir_procesos(); aqui
-          
-        //Aqui inicializo el proceso actual, que sera el que esta al frente de la cola
-       
-
-        //aqui deberia de ir un if para comprobar si hay espacio en memoria
-        //esta seria la implementacion de buddy system en round robin :)
-        PROCESO ACTUAL = Cola_procesos.front();
-
-        if(dividirmemoria(MEMORIA,&ACTUAL) == true){
-         
-        //Elimino ese proceso usando su iterador
-        Cola_procesos.erase(Cola_procesos.begin());
-
-        //ESTA LINEA REPRESENTA QUE EL PROCESO SE ESTA EJECUTANDO
-        ACTUAL.quantumproceso = ACTUAL.quantumproceso - QUANTUM_SYSTEM;
-
-        //Front sirve para referirte a lo que esta dentro de esa casilla
-        //Begin sirve para referirte a la casilla en si
-
-        //Si el proceso es mayor que 0 quiere decir que todavia no ha acabado
-        if(ACTUAL.quantumproceso > 0){
-            //Mando el proceso al final de la cola
-            Cola_procesos.push_back(ACTUAL);
-        }else{
-            //Aqui ya acabo el proceso
-            liberarmemoria(MEMORIA,ACTUAL);
-             Cola_procesos.erase(Cola_procesos.begin());
-        }
-             
-        }else{
-           //Avanza al siguiente en la lista de procesos
-           if (it == Cola_procesos.end()) {
-                      it = Cola_procesos.begin();
-            } else {
-                    ++it;
-            }
-
-        }
-    }
-}
 //Esta funcion genera un proceso aleatorio y cambia el id de los procesos para sumarlo en 1
 PROCESO generar_proceso(int& id_procesos){
 
     //El tamaño limite de tamaño del proceso
-    int TAMAÑOmin = 50;
-    int TAMAÑOmax = 200;
+    int TAMAÑOmin = 1;
+    int TAMAÑOmax = 1000;
     //El tamaño limite del cuantum del proceso
     int CUANTUMmin = 1;
-    int CUANTUMmax = 10;
+    int CUANTUMmax = 50;
     
     //Valor aleatorio del tamaño
     int tamaño = TAMAÑOmin + rand() %(TAMAÑOmax - TAMAÑOmin +1);
@@ -241,6 +181,69 @@ PROCESO generar_proceso(int& id_procesos){
 
     return proceso;
 }
+// ESTE ES EL PLANIFICADOR ROUND ROBIN
+void PLANIFICADOR(){
+    int id_procesos = 0;
+    PROCESO begin;
+    bool Proceso_esperando = false;
+    while(true){
+
+        system("clear");
+        memoria.clear();
+        llenarvector(MEMORIA,96,true,false);
+        imprimir_memoria();
+        imprimir_procesos();
+
+        //Aqui inicializo el proceso actual, que sera el que esta al frente de la cola  
+
+        //aqui deberia de ir un if para comprobar si hay espacio en memoria
+        //esta seria la implementacion de buddy system en round robin :)
+       // if(Proceso_esperando == false){
+        PROCESO PorEntrar = generar_proceso(id_procesos);
+      //  }
+        
+        if(dividirmemoria(MEMORIA,&PorEntrar) == true){
+        
+        Cola_procesos.push_back(PorEntrar);
+        
+        begin = Cola_procesos.front();
+        
+        begin.quantumproceso = begin.quantumproceso - QUANTUM_SYSTEM;
+        
+        //Si el proceso es mayor que 0 quiere decir que todavia no ha acabado
+        if(begin.quantumproceso <= 0){
+
+           // liberarmemoria(MEMORIA,Cola_procesos.front());
+            Cola_procesos.erase(Cola_procesos.begin());
+
+        }else{
+        
+        //Elimino ese proceso usando su iterador
+        
+        Cola_procesos.erase(Cola_procesos.begin());
+
+        //ESTA LINEA REPRESENTA QUE EL PROCESO SE ESTA EJECUTANDO
+        Cola_procesos.push_back(begin);
+        }
+
+        }else{
+             
+
+             // Proceso_esperando = true;
+              //Declaro el proceso del inicio
+              begin = Cola_procesos.front();
+              //EJECUTAR
+              begin.quantumproceso = begin.quantumproceso - QUANTUM_SYSTEM;
+
+              Cola_procesos.erase(Cola_procesos.begin());
+              //ESTA LINEA REPRESENTA QUE EL PROCESO SE ESTA EJECUTANDO
+              Cola_procesos.push_back(begin);
+        
+        }
+        sleep(5);
+
+    }
+}
 
 
 int main(){
@@ -251,15 +254,11 @@ int main(){
    //El id de los procesos
    int id_procesos;
 
-   //Aqui un for rapidito donde genero 20 procesos aleatoriamente
-   for(int i=1;i<=20;i++){
-     PROCESO proceso = generar_proceso(id_procesos);
-     Cola_procesos.push_back(proceso);
-   }
+
    PLANIFICADOR();
    //SIMULACION
    //PLANIFICADOR();
 
-
+   delete(MEMORIA);
    return 0;
 }

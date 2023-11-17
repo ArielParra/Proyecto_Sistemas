@@ -64,29 +64,36 @@ Si si es, crea dos bloques hijos (izquierda y derecha) y actualiza el bloque act
 Luego, decide en cual de los bloques hijos asignar el espacio llamando recursivamente a dividirmemoria.
 Si el bloque no es lo suficientemente grande, simplemente marca el bloque como no libre y lo devuelve*/
 
-bool dividirmemoria(BLOQUE_DE_MEMORIA* bloque, PROCESO* actual) {   
-    if (actual->tamaño <= (bloque->tamaño/2)) {
-        // Crear dos bloques hijos
-        if(bloque->izq==nullptr && bloque->der==nullptr){
-            bloque->izq = new BLOQUE_DE_MEMORIA{ bloque->tamaño / 2, true, 0, nullptr,nullptr };
-            bloque->der = new BLOQUE_DE_MEMORIA{ bloque->tamaño / 2, true, 0, nullptr,nullptr };
-            // Actualizar el bloque actual             
+bool sepuededividir(BLOQUE_DE_MEMORIA* bloque, PROCESO* actual, int tamaño) {
+    if (bloque->libre) {
+        if (tamaño <= (bloque->tamaño / 2)) {
+            if (bloque->izq == nullptr) {
+                bloque->izq = new BLOQUE_DE_MEMORIA{ tamaño / 2, true, 0, nullptr, nullptr };
+            }
+            if (bloque->der == nullptr) {
+                bloque->der = new BLOQUE_DE_MEMORIA{ tamaño / 2, true, 0, nullptr, nullptr };
+            }
+            if (sepuededividir(bloque->izq, actual, tamaño) || sepuededividir(bloque->der, actual, tamaño)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
             bloque->libre = false;
-        }
-        // Es para decidir en cual de los bloques hijos se va a asignar la memoria
-        if ((actual->tamaño <= bloque->izq->tamaño) && bloque->izq->libre==true) {
-            return dividirmemoria(bloque->izq, actual);
-        } else if((actual->tamaño <= bloque->izq->tamaño) && bloque->der->libre==true){
-            return dividirmemoria(bloque->der, actual);
-        } else{
-            return false;
+            bloque->idprocesoqueocupa = actual->idproceso;
+            return true;
         }
     } else {
-        bloque->libre = false;
-        bloque->idprocesoqueocupa = actual->idproceso;
-        return true;
+        if (bloque->izq != nullptr && sepuededividir(bloque->izq, actual, tamaño)) {
+            return true;
+        } else if (bloque->der != nullptr && sepuededividir(bloque->der, actual, tamaño)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
+
 
 // LIBERAR MEMORIA
 /*Esta funcion libera un bloque de memoria y fusiona bloques juntos que estan libres
@@ -163,10 +170,10 @@ PROCESO generar_proceso(int& id_procesos){
 
     //El tamaño limite de tamaño del proceso
     int TAMAÑOmin = 1;
-    int TAMAÑOmax = 1000;
+    int TAMAÑOmax = 1024;
     //El tamaño limite del cuantum del proceso
     int CUANTUMmin = 1;
-    int CUANTUMmax = 50;
+    int CUANTUMmax = 10;
     
     //Valor aleatorio del tamaño
     int tamaño = TAMAÑOmin + rand() %(TAMAÑOmax - TAMAÑOmin +1);
@@ -184,9 +191,7 @@ PROCESO generar_proceso(int& id_procesos){
 // ESTE ES EL PLANIFICADOR ROUND ROBIN
 void PLANIFICADOR(){
     int id_procesos = 0;
-    PROCESO begin;
-    bool Proceso_esperando = false;
-    while(true){
+    for(int i=0;i<Cola_lista.size();i++){
 
         system("clear");
         memoria.clear();
@@ -199,23 +204,21 @@ void PLANIFICADOR(){
         //aqui deberia de ir un if para comprobar si hay espacio en memoria
         //esta seria la implementacion de buddy system en round robin :)
        // if(Proceso_esperando == false){
-        PROCESO PorEntrar = generar_proceso(id_procesos);
-      //  }
+        PROCESO PorEntrar = Cola_lista[i];
+
+        bool sepuede = sepuededividir(MEMORIA,&PorEntrar,PorEntrar.tamaño);
         
-        if(dividirmemoria(MEMORIA,&PorEntrar) == true){
+        if(sepuede){
         
         Cola_procesos.push_back(PorEntrar);
-        
-        begin = Cola_procesos.front();
+        PROCESO begin = Cola_procesos.front();
         
         begin.quantumproceso = begin.quantumproceso - QUANTUM_SYSTEM;
         
         //Si el proceso es mayor que 0 quiere decir que todavia no ha acabado
         if(begin.quantumproceso <= 0){
-
-           // liberarmemoria(MEMORIA,Cola_procesos.front());
             Cola_procesos.erase(Cola_procesos.begin());
-
+            liberarmemoria(MEMORIA,begin);
         }else{
         
         //Elimino ese proceso usando su iterador
@@ -227,21 +230,23 @@ void PLANIFICADOR(){
         }
 
         }else{
-             
-
-             // Proceso_esperando = true;
+              
+              i-=1;
               //Declaro el proceso del inicio
-              begin = Cola_procesos.front();
+              PROCESO begin = Cola_procesos.front();
               //EJECUTAR
               begin.quantumproceso = begin.quantumproceso - QUANTUM_SYSTEM;
-
+              if(begin.quantumproceso <= 0){
+                  Cola_procesos.erase(Cola_procesos.begin());
+                  liberarmemoria(MEMORIA,begin);
+              }else{
               Cola_procesos.erase(Cola_procesos.begin());
               //ESTA LINEA REPRESENTA QUE EL PROCESO SE ESTA EJECUTANDO
               Cola_procesos.push_back(begin);
+              }
         
         }
-        sleep(5);
-
+        sleep(2);
     }
 }
 
@@ -253,7 +258,11 @@ int main(){
 
    //El id de los procesos
    int id_procesos;
-
+   
+   for(int i=0;i<10;i++){
+     PROCESO proceso = generar_proceso(id_procesos);
+     Cola_lista.push_back(proceso);
+   }
 
    PLANIFICADOR();
    //SIMULACION

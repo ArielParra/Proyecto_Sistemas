@@ -1,7 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <time.h>
-
+#include <cstdlib>
+#include <unistd.h>
 using namespace std;
 
 //Esto representara un bloque de memoria en BUDDY SYSTEM
@@ -31,7 +32,7 @@ vector<int> memoria;
 const int TAMAÑO_MEMORIA = 1024; // Tamaño total de la memoria
 
 void inicializarMemoria() {
-    MEMORIA = new BLOQUE_DE_MEMORIA{ TAMAÑO_MEMORIA, true, nullptr, nullptr, nullptr };
+    MEMORIA = new BLOQUE_DE_MEMORIA{ TAMAÑO_MEMORIA, true, 0, nullptr, nullptr};
 }
 //Representara la memoria, cabe destacar, que la memoria NO ES DINAMICA
 //La memoria TIENE TAMAÑO FIJO, pero se dividira en segmentos
@@ -62,24 +63,23 @@ Si si es, crea dos bloques hijos (izquierda y derecha) y actualiza el bloque act
 Luego, decide en cual de los bloques hijos asignar el espacio llamando recursivamente a dividirmemoria.
 Si el bloque no es lo suficientemente grande, simplemente marca el bloque como no libre y lo devuelve*/
 
-bool dividirmemoria(BLOQUE_DE_MEMORIA& bloque, PROCESO actual) {   
+bool dividirmemoria(BLOQUE_DE_MEMORIA* bloque, PROCESO* actual) {   
     if (bloque->tamaño >= actual->tamaño * 2) {
         // Crear dos bloques hijos
-        if(bloque->izq==nullptr){
-            bloque->izq = new BLOQUE_DE_MEMORIA{ bloque->tamaño / 2, true, nullptr, nullptr };}
-        if(bloque->der==nullptr){
-            bloque->der = new BLOQUE_DE_MEMORIA{ bloque->tamaño / 2, true, nullptr, nullptr };}
-
-        // Actualizar el bloque actual
-        bloque->tamaño /= 2;              
-        bloque->libre = false;
+        if(bloque->izq==nullptr && bloque->der==nullptr){
+            bloque->izq = new BLOQUE_DE_MEMORIA{ bloque->tamaño / 2, true, 0, nullptr,nullptr };
+            bloque->der = new BLOQUE_DE_MEMORIA{ bloque->tamaño / 2, true, 0, nullptr,nullptr };
+            // Actualizar el bloque actual
+            bloque->tamaño /= 2;              
+            bloque->libre = false;
+        }
 
         // Es para decidir en cual de los bloques hijos se va a asignar la memoria
-        if (TAMAÑO_PEDIDO <= bloque->izq->tamaño && bloque->libre==true) {
-            return dividirmemoria(bloque->izq, actual->tamaño);
-        } else if(bloque->libre==true){
-            return dividirmemoria(bloque->der, actual->tamaño);
-        } else if{
+        if (actual->tamaño <= bloque->izq->tamaño && bloque->izq->libre==true) {
+            return dividirmemoria(bloque->izq, actual);
+        } else if(actual->tamaño <= bloque->izq->tamaño && bloque->der->libre==true){
+            return dividirmemoria(bloque->der, actual);
+        } else{
             return false;
         }
     } else {
@@ -97,14 +97,14 @@ y mueve el puntero al bloque padre
 El bucle continua hasta que no se pueden fusionar mas bloques o hasta llegar a la raiz del arbol */
 void liberarmemoria(BLOQUE_DE_MEMORIA* bloque, PROCESO actual) {
     
-    if(bloque->izq->idprocesoqueocupa == actual->idproceso){
+    if(bloque->izq->idprocesoqueocupa == actual.idproceso){
         bloque->izq->libre = true;
         if(bloque->der->libre == true){
             bloque->izq = nullptr;
             bloque->der = nullptr;
             bloque->tamaño *= 2;
         }
-    }else if(bloque->der->idprocesoqueocupa == actual->idproceso){
+    }else if(bloque->der->idprocesoqueocupa == actual.idproceso){
         bloque->der->libre = true;
         if(bloque->izq->libre == true){
             bloque->izq = nullptr;
@@ -112,25 +112,70 @@ void liberarmemoria(BLOQUE_DE_MEMORIA* bloque, PROCESO actual) {
             bloque->tamaño *= 2;
         }
     }else if(bloque->izq!=nullptr && bloque->der!=nullptr){
-        liberarmemoria(bloque->izq,actual);
-        liberarmemoria(bloque->der,actual);
+        liberarmemoria(bloque->izq, actual);
+        liberarmemoria(bloque->der, actual);
     }
 }
+void imprimir_memoria(){
+   bool imprimir;
+   int i,j;
+   cout << endl;
+   for (int i = 1; i <= 96; ++i) {
+    bool imprimir = true; 
+    for (int j = 0; j < memoria.size(); ++j) {
+        if (memoria[j] == i) {
+            imprimir = false;
+            break;
+        }
+    }
+    (imprimir) ? cout << "█" : cout << " ";
+}
+   cout <<endl;
 
+}
+// Funcion para imprimir los procesos (se cambiara mas tarde si queremos gui)
+void imprimir_procesos(){
+   for(auto i = Cola_procesos.begin(); i != Cola_procesos.end(); ++i) {
+    PROCESO actual = *i;
+    cout << "Proceso " << actual.idproceso << " (" << actual.tamaño << "," << actual.quantumproceso << ") " << endl;
+   }
+}
+
+// Aqui Imprimiremos como se vera la memoria, como ira dividiendo sus segmentos o juntandolos,etc
+void llenarvector(BLOQUE_DE_MEMORIA* bloque,int tamañototal,bool izq,bool der){
+   int tamaño;
+   if(izq==true){
+       if(bloque->izq!=nullptr && bloque->der!=nullptr){
+          tamaño = tamañototal/2;
+          memoria.push_back(tamaño);
+          llenarvector(bloque->izq,tamaño,true,false);
+          llenarvector(bloque->der,tamaño,false,true);
+       }
+   }
+   if(der==true){
+        if(bloque->izq!=nullptr && bloque->der!=nullptr){
+          tamaño = tamaño + (tamañototal/2);
+          memoria.push_back(tamaño);
+          llenarvector(bloque->izq,tamaño,true,false);
+          llenarvector(bloque->der,tamaño,false,true);
+        }
+   }
+}
 // ESTE ES EL PLANIFICADOR ROUND ROBIN
 void PLANIFICADOR(){
     //inicializo el begin de la cola de procesos
-    int it = Cola_procesos.begin(); 
+    auto it = Cola_procesos.begin(); 
     while(!Cola_procesos.empty()){
         
         // sleep o usleep aqui, aunque quizas se maneje globalmente
         // ya que el usuario podra modificiar la velocidad de la simulacion
         // alomejor y ponemos que use las flechitas para aumentar o disminuir la velocidad, yo k se
-        system(clear);
+        system("clear");
         memoria.clear();
         llenarvector(MEMORIA,96,true,false);
         imprimir_memoria();
         imprimir_procesos();
+        sleep(2.);
         // system(cls) o system(clear) aqui
         // imprimir_procesos(); aqui
           
@@ -141,7 +186,7 @@ void PLANIFICADOR(){
         //esta seria la implementacion de buddy system en round robin :)
         PROCESO ACTUAL = Cola_procesos.front();
 
-        if(dividirmemoria(MEMORIA,ACTUAL) == true){
+        if(dividirmemoria(MEMORIA,&ACTUAL) == true){
          
         //Elimino ese proceso usando su iterador
         Cola_procesos.erase(Cola_procesos.begin());
@@ -158,15 +203,18 @@ void PLANIFICADOR(){
             Cola_procesos.push_back(ACTUAL);
         }else{
             //Aqui ya acabo el proceso
-            liberarmemoria(ACTUAL.bloque_memoria);
+            liberarmemoria(MEMORIA,ACTUAL);
              Cola_procesos.erase(Cola_procesos.begin());
         }
              
         }else{
            //Avanza al siguiente en la lista de procesos
-           if(++it == Cola_procesos.end()){
-             it = Cola_procesos.begin();
-           }
+           if (it == Cola_procesos.end()) {
+                      it = Cola_procesos.begin();
+            } else {
+                    ++it;
+            }
+
         }
     }
 }
@@ -185,58 +233,15 @@ PROCESO generar_proceso(int& id_procesos){
     
     //Valor aleatorio del cuantum
     int cuantum = CUANTUMmin + rand() %(CUANTUMmax - CUANTUMmin +1);
-
-    //Se genera el tamaño de bloque de memoria
-    BLOQUE_DE_MEMORIA* bloque_de_memoria;
-    bloque_de_memoria->tamaño = tamaño;
-    bloque_de_memoria->libre = true;
     
     //id incrementa
     id_procesos +=1;
 
-    PROCESO proceso = {id_procesos,cuantum,bloque_de_memoria};
+    PROCESO proceso = {id_procesos,cuantum,tamaño};
 
     return proceso;
 }
-void imprimir_memoria(){
-   bool imprimir;
-   int i,j;
-   for(i=1;i<=96;i++){
-      for(j=0;j<memoria.end();j++){
-         (memoria[j]==i) ? imprimir = false : imprimir true;
-      }
-      (imprimir) ? cout << "█" : cout <<" ";
-   }
 
-}
-// Funcion para imprimir los procesos (se cambiara mas tarde si queremos gui)
-void imprimir_procesos(){
-    for(int i=Cola_procesos.begin();i<Cola_procesos.end();i++){
-        PROCESO actual = Cola_procesos.front();
-        cout << "Proceso "<<actual.idproceso<< " ("<<actual.tamaño<<","<<actual.quantumproceso<<") "<<endl;
-    }
-}
-
-// Aqui Imprimiremos como se vera la memoria, como ira dividiendo sus segmentos o juntandolos,etc
-void llenarvector(BLOQUE_DE_MEMORIA* bloque,int tamañototal,bool izq,bool der){
-   int tamaño;
-   if(izq==true){
-       if(bloque->izq!=nullptr && bloque->der!=nullptr){
-          tamaño = tamañototal/2;
-          memoria.push_back(tamaño);
-          imprimir_memoria(bloque->izq,tamañototal,true,false);
-          imprimir_memoria(bloque->der,tamañototal,false,true);
-       }
-   }
-   if(der==true){
-        if(bloque->izq!=nullptr && bloque->der!=nullptr){
-          tamaño = tamaño + (tamañototal/2);
-          memoria.push_back(tamaño);
-          imprimir_memoria(bloque->izq,tamañototal,true,false);
-          imprimir_memoria(bloque->der,tamañototal,false,true);
-        }
-   }
-}
 
 int main(){
    srand(time(NULL));  
@@ -247,7 +252,7 @@ int main(){
    int id_procesos;
 
    //Aqui un for rapidito donde genero 20 procesos aleatoriamente
-   for(int i=0;i<20;i++){
+   for(int i=1;i<=20;i++){
      PROCESO proceso = generar_proceso(id_procesos);
      Cola_procesos.push_back(proceso);
    }

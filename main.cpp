@@ -280,7 +280,7 @@ int main(){
    inicializarMemoria();
 
    //El id de los procesos
-   int id_procesos;
+   int id_procesos = 0;
    
    for(int i=0;i<10;i++){
      PROCESO proceso = generar_proceso(id_procesos);

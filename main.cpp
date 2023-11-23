@@ -4,7 +4,18 @@
 #include <cstdlib>
 #include <unistd.h>
 using namespace std;
+/*Funcinoes Auxiliares*/
+#if defined(_WIN32)
+void clear() { system("cls"); }
+#else
+void clear() { system("clear"); }
+#endif
 
+void pause() {
+  cout << endl << "Presione enter para continuar . . .";
+  cin.ignore();
+  cin.get();
+}
 //Esto representara un bloque de memoria en BUDDY SYSTEM
 struct BLOQUE_DE_MEMORIA {
     int tamaño;
@@ -72,7 +83,10 @@ bool sepuededividir(BLOQUE_DE_MEMORIA* bloque, PROCESO* actual) {
             if (bloque->der == nullptr) {
                 bloque->der = new BLOQUE_DE_MEMORIA{ (bloque->tamaño / 2), true, 0, nullptr, nullptr };
             }
-            if (sepuededividir(bloque->izq,actual) || sepuededividir(bloque->der, actual)) {
+            if (sepuededividir(bloque->izq,actual)){
+                return true;
+            }
+            else if(sepuededividir(bloque->der, actual)) {
                 return true;
             } else {
                 return false;
@@ -136,7 +150,6 @@ void liberarmemoria(BLOQUE_DE_MEMORIA* bloque, PROCESO actual) {
 
 
 void imprimir_memoria(){
-   bool imprimir;
    cout << endl;
    for (int i = 1; i <= 96; ++i) {
     bool imprimir = true; 
@@ -202,48 +215,43 @@ PROCESO generar_proceso(int& id_procesos){
 }
 // ESTE ES EL PLANIFICADOR ROUND ROBIN
 void PLANIFICADOR(){
-    int id_procesos = 0;
     int i=0;
     while(true){
 
-        system("clear");
-        memoria.clear();
-        llenarvector(MEMORIA,96,true,false);
-        imprimir_memoria();
+        clear();
         imprimir_procesos();
-        cout << endl << TAMAÑO_MEMORIA;
-        //Aqui inicializo el proceso actual, que sera el que esta al frente de la cola  
+        //llenarvector(MEMORIA,96,true,false);
+        //imprimir_memoria();
 
-        //aqui deberia de ir un if para comprobar si hay espacio en memoria
-        //esta seria la implementacion de buddy system en round robin :)
-       // if(Proceso_esperando == false){
         PROCESO PorEntrar = Cola_lista[i];
 
         bool sepuede = sepuededividir(MEMORIA,&PorEntrar);
-        
+        cout << "Proceso por entrar: "<<"("<<PorEntrar.idproceso<<","<<PorEntrar.tamaño<<","<<PorEntrar.quantumproceso<<")"<<endl;
         if(sepuede){
-            i+=1;
             Cola_procesos.push_back(PorEntrar);
-
             PROCESO begin = Cola_procesos.front();
-            
+            clear();
+            imprimir_procesos();
+            sleep(2);
+
             begin.quantumproceso = begin.quantumproceso - QUANTUM_SYSTEM;
         
             //Si el proceso es mayor que 0 quiere decir que todavia no ha acabado
             if(begin.quantumproceso <= 0){
                 Cola_procesos.erase(Cola_procesos.begin());
                 liberarmemoria(MEMORIA,begin);
-            }else{
-        
-            //Elimino ese proceso usando su iterador
-        
-            Cola_procesos.erase(Cola_procesos.begin());
+            }else{               
+                Cola_procesos.erase(Cola_procesos.begin());
+                //ESTA LINEA REPRESENTA QUE EL PROCESO SE ESTA EJECUTANDO
+                Cola_procesos.push_back(begin);   
+            }
+            clear();
+            imprimir_procesos();
+            sleep(2);
+            i+=1;
 
-            //ESTA LINEA REPRESENTA QUE EL PROCESO SE ESTA EJECUTANDO
-            Cola_procesos.push_back(begin);
-        }
         }else{
-              //Declaro el proceso del inicio
+
               PROCESO begin = Cola_procesos.front();
               //EJECUTAR
               begin.quantumproceso = begin.quantumproceso - QUANTUM_SYSTEM;
@@ -257,9 +265,10 @@ void PLANIFICADOR(){
               //ESTA LINEA REPRESENTA QUE EL PROCESO SE ESTA EJECUTANDO
               Cola_procesos.push_back(begin);
               }
-        
+              clear();
+              imprimir_procesos();
+              sleep(2);
         }
-        system("read -p ''");
     }
 }
 

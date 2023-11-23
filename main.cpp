@@ -11,11 +11,6 @@ void clear() { system("cls"); }
 void clear() { system("clear"); }
 #endif
 
-void pause() {
-  cout << endl << "Presione enter para continuar . . .";
-  cin.ignore();
-  cin.get();
-}
 //Esto representara un bloque de memoria en BUDDY SYSTEM
 struct BLOQUE_DE_MEMORIA {
     int tamaño;
@@ -227,11 +222,13 @@ void PLANIFICADOR(){
 
         bool sepuede = sepuededividir(MEMORIA,&PorEntrar);
         cout << "Proceso por entrar: "<<"("<<PorEntrar.idproceso<<","<<PorEntrar.tamaño<<","<<PorEntrar.quantumproceso<<")"<<endl;
+        sleep(2);
         if(sepuede){
             Cola_procesos.push_back(PorEntrar);
             PROCESO begin = Cola_procesos.front();
             clear();
             imprimir_procesos();
+            cout << "Proceso a ejecutar: "<<"("<<begin.idproceso<<","<<begin.tamaño<<","<<begin.quantumproceso<<")"<<endl;
             sleep(2);
 
             begin.quantumproceso = begin.quantumproceso - QUANTUM_SYSTEM;
@@ -252,8 +249,12 @@ void PLANIFICADOR(){
 
         }else{
 
+              cout << "Proceso por entrar: "<<"("<<PorEntrar.idproceso<<","<<PorEntrar.tamaño<<","<<PorEntrar.quantumproceso<<")"<<endl;
               PROCESO begin = Cola_procesos.front();
-              //EJECUTAR
+              clear();
+              imprimir_procesos();
+              cout << "Proceso a ejecutar: "<<"("<<begin.idproceso<<","<<begin.tamaño<<","<<begin.quantumproceso<<")"<<endl;
+              sleep(2);
               begin.quantumproceso = begin.quantumproceso - QUANTUM_SYSTEM;
 
               if(begin.quantumproceso <= 0){

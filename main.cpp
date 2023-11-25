@@ -71,7 +71,7 @@ Si el bloque no es lo suficientemente grande, simplemente marca el bloque como n
 
 bool sepuededividir(BLOQUE_DE_MEMORIA* bloque, PROCESO* actual) {
     if (bloque->libre) {
-        if ((actual->tamano) <= (bloque->tamano / 2)) {
+        if ((actual->tamano) <= (bloque->tamano / 2) && (bloque->tamano > 32)) {
             if (bloque->izq == nullptr) {
                 bloque->izq = new BLOQUE_DE_MEMORIA{ (bloque->tamano / 2), true, 0, nullptr, nullptr };
             }
@@ -90,6 +90,8 @@ bool sepuededividir(BLOQUE_DE_MEMORIA* bloque, PROCESO* actual) {
             if(bloque->tamano > actual->tamano){
             bloque->libre = false;
             bloque->idprocesoqueocupa = actual->idproceso;
+             cout << "Proceso " << actual->idproceso << " (" << actual->tamano << "," << actual->quantumproceso << ") almacenado en un bloque de tamano " << bloque->tamano << endl;
+             sleep(2);
             return true;
             }else{
                 return false;
@@ -186,20 +188,14 @@ void llenarvector(BLOQUE_DE_MEMORIA* bloque,int tamanototal,bool izq,bool der){
    }
 }
 //Esta funcion genera un proceso aleatorio y cambia el id de los procesos para sumarlo en 1
-PROCESO generar_proceso(int& id_procesos){
+PROCESO generar_proceso(int& id_procesos, const int tamanomax, const int CUANTUMmax){
 
-    //El tamano limite de tamano del proceso
-    int tamanomin = 1;
-    int tamanomax = 600;
-    //El tamano limite del cuantum del proceso
-    int CUANTUMmin = 1;
-    int CUANTUMmax = 10;
     
     //Valor aleatorio del tamano
-    int tamano = tamanomin + rand() %(tamanomax - tamanomin +1);
+    int tamano = 1 + rand() %(tamanomax - 1 +1);
     
     //Valor aleatorio del cuantum
-    int cuantum = CUANTUMmin + rand() %(CUANTUMmax - CUANTUMmin +1);
+    int cuantum = 1 + rand() %(CUANTUMmax - 1 +1);
     
     //id incrementa
     id_procesos +=1;
@@ -221,14 +217,14 @@ void PLANIFICADOR(){
         PROCESO PorEntrar = Cola_lista[i];
 
         bool sepuede = sepuededividir(MEMORIA,&PorEntrar);
-        cout << "Proceso por entrar: "<<"("<<PorEntrar.idproceso<<","<<PorEntrar.tamano<<","<<PorEntrar.quantumproceso<<")"<<endl;
+        cout << "Proceso por entrar: "<<"("<<PorEntrar.idproceso<<","<<PorEntrar.tamano<<","<<PorEntrar.quantumproceso<<")" <<endl;
         sleep(2);
         if(sepuede){
             Cola_procesos.push_back(PorEntrar);
             PROCESO begin = Cola_procesos.front();
             clear();
             imprimir_procesos();
-            cout << "Proceso a ejecutar: "<<"("<<begin.idproceso<<","<<begin.tamano<<","<<begin.quantumproceso<<")"<<endl;
+            cout << "Proceso a ejecutar: "<<"("<<begin.idproceso<<","<<begin.tamano<<","<<begin.quantumproceso<<")" <<endl;
             sleep(2);
 
             begin.quantumproceso = begin.quantumproceso - QUANTUM_SYSTEM;
@@ -277,13 +273,18 @@ void PLANIFICADOR(){
 int main(){
    srand(time(NULL));  
     //Generamos la memoria
+    int tamanomax, CUANTUMmax;
    inicializarMemoria();
-
+    cout << "Ingrese el tamano maximo de los procesos:";
+    cin >> tamanomax;
+    cout << "Ingrese el tamano maximo del cuantum de los procesos:";
+    cin >> CUANTUMmax;
+    
    //El id de los procesos
    int id_procesos = 0;
    
    for(int i=0;i<10;i++){
-     PROCESO proceso = generar_proceso(id_procesos);
+     PROCESO proceso = generar_proceso(id_procesos, tamanomax, CUANTUMmax);
      Cola_lista.push_back(proceso);
    }
 

@@ -109,6 +109,34 @@ bool sepuededividir(BLOQUE_DE_MEMORIA* bloque, PROCESO* actual) {
 
 }
 
+void imprimirBloquesMemoria(BLOQUE_DE_MEMORIA* bloque) {
+    if (bloque != nullptr) {
+        if (bloque->izq == nullptr && bloque->der == nullptr) {
+            if (bloque->libre) {
+                cout << "[0," << bloque->tamano << ",0]";
+            } else {
+                PROCESO* proceso = &Cola_procesos[bloque->idprocesoqueocupa - 1];
+                cout << "[" << proceso->idproceso << "," << proceso->tamano << "(" << bloque->tamano << ")," << proceso->quantumproceso << "]";
+            }
+        } else {
+            cout << "[";
+            imprimirBloquesMemoria(bloque->izq);
+            cout << "]";
+            cout << "[";
+            imprimirBloquesMemoria(bloque->der);
+            cout << "]";
+        }
+    }
+}
+void imprimirBloquesDeMemoria() {
+    cout << "Bloques de memoria generados y ocupados por procesos:" << endl;
+    imprimirBloquesMemoria(MEMORIA);
+    cout << endl;
+}
+
+
+
+
 
 // LIBERAR MEMORIA
 /*Esta funcion libera un bloque de memoria y fusiona bloques juntos que estan libres
@@ -225,6 +253,7 @@ void PLANIFICADOR(){
             clear();
             imprimir_procesos();
             cout << "Proceso a ejecutar: "<<"("<<begin.idproceso<<","<<begin.tamano<<","<<begin.quantumproceso<<")" <<endl;
+             imprimirBloquesDeMemoria();
             sleep(2);
 
             begin.quantumproceso = begin.quantumproceso - QUANTUM_SYSTEM;

@@ -10,22 +10,22 @@ void clear() { system("cls"); }
 #else
 void clear() { system("clear"); }
 #endif
-
-//Esto representara un bloque de memoria en BUDDY SYSTEM
-struct BLOQUE_DE_MEMORIA {
-    int tamaño;
-    bool libre;
-    int idprocesoqueocupa;
-    BLOQUE_DE_MEMORIA* izq;
-    BLOQUE_DE_MEMORIA* der;
-};
-
 //Esto representara un proceso
 struct PROCESO{
     int idproceso; // su id
     int quantumproceso; // el tiempo en que tardara en terminarse
     int tamaño; // Un apuntador al bloque de memoria asignado
 };
+
+//Esto representara un bloque de memoria en BUDDY SYSTEM
+struct BLOQUE_DE_MEMORIA {
+    int tamaño;
+    bool libre;
+    PROCESO* procesoqueocupa;
+    BLOQUE_DE_MEMORIA* izq;
+    BLOQUE_DE_MEMORIA* der;
+};
+
 
 //VECTORES
 
@@ -38,7 +38,7 @@ vector<PROCESO> Cola_lista;
 const int TAMAÑO_MEMORIA = 1024; // Tamaño total de la memoria
 
 void inicializarMemoria() {
-    MEMORIA = new BLOQUE_DE_MEMORIA{ TAMAÑO_MEMORIA, true, 0, nullptr, nullptr};
+    MEMORIA = new BLOQUE_DE_MEMORIA{TAMAÑO_MEMORIA, true, nullptr, nullptr, nullptr};
 }
 //Representara la memoria, cabe destacar, que la memoria NO ES DINAMICA
 //La memoria TIENE TAMAÑO FIJO, pero se dividira en segmentos
@@ -60,8 +60,26 @@ const int QUANTUM_SYSTEM = 2;
 
 // A mi parecer deberan ser recursivas, ya que si el tamaño no es adecuado
 // se tendra que dividir mas y mas y mas, hasta el infinito y mas alla, mentira nomas hasta 32kb uwu
-
-
+void imprimirMemoriaRecursiva(BLOQUE_DE_MEMORIA* bloque) {
+    if(bloque->izq!=nullptr){
+        imprimirMemoriaRecursiva(bloque->izq);
+    }
+    if(bloque->der!=nullptr){
+        imprimirMemoriaRecursiva(bloque->der);
+    }
+    
+    if(bloque->procesoqueocupa!=nullptr){
+    if (bloque->der==nullptr && bloque->izq==nullptr) {
+        cout << "[" << bloque->procesoqueocupa->idproceso << "," << bloque->tamaño
+        << "(" << (bloque->procesoqueocupa->tamaño) << ")," << bloque->procesoqueocupa->quantumproceso << "] ";
+    }}
+    else{
+        if (bloque->der==nullptr && bloque->izq==nullptr) {
+        cout << "[0"<< "," << bloque->tamaño
+        << "(0),0]";
+    }
+    }
+}
 // DIVIDIR MEMORIA
 /*Esta funcion se encarga de dividir un bloque de memoria con Buddy System. Recibe un puntero al bloque actual bloque y el tamaño requerido TAMAÑO_PEDIDO
 Luego, verifica si el bloque es lo suficientemente grande para dividirse en dos
@@ -70,7 +88,7 @@ Luego, decide en cual de los bloques hijos asignar el espacio llamando recursiva
 Si el bloque no es lo suficientemente grande, simplemente marca el bloque como no libre y lo devuelve*/
 
 bool sepuededividir(BLOQUE_DE_MEMORIA* bloque, PROCESO* actual) {
-    if (bloque->libre) {
+    if (bloque->libre==true) {
         if ((actual->tamaño) <= (bloque->tamaño / 2)) {
             if (bloque->izq == nullptr) {
                 bloque->izq = new BLOQUE_DE_MEMORIA{ (bloque->tamaño / 2), true, 0, nullptr, nullptr };
@@ -78,18 +96,19 @@ bool sepuededividir(BLOQUE_DE_MEMORIA* bloque, PROCESO* actual) {
             if (bloque->der == nullptr) {
                 bloque->der = new BLOQUE_DE_MEMORIA{ (bloque->tamaño / 2), true, 0, nullptr, nullptr };
             }
+            bloque->libre=false;
             if (sepuededividir(bloque->izq,actual)){
                 return true;
             }
             else if(sepuededividir(bloque->der, actual)) {
                 return true;
-            } else {
+            }else{
                 return false;
             }
         } else{
             if(bloque->tamaño > actual->tamaño){
             bloque->libre = false;
-            bloque->idprocesoqueocupa = actual->idproceso;
+            bloque->procesoqueocupa = actual;
             return true;
             }else{
                 return false;
@@ -116,48 +135,23 @@ y mueve el puntero al bloque padre
 El bucle continua hasta que no se pueden fusionar mas bloques o hasta llegar a la raiz del arbol */
 void liberarmemoria(BLOQUE_DE_MEMORIA* bloque, PROCESO actual) {
     if (bloque != nullptr) {
-        if (bloque->idprocesoqueocupa == actual.idproceso) {
-            // Liberar el bloque actual
+        if (bloque->procesoqueocupa->idproceso == actual.idproceso) {
             bloque->libre = true;
-            bloque->idprocesoqueocupa = -1;
-
-            // Intentar fusionar con el bloque hermano
-            if (bloque->izq != nullptr && bloque->izq->libre && bloque->der != nullptr && bloque->der->libre) {
-                // Ambos bloques adyacentes son libres, fusionarlos
-                bloque->izq = nullptr;
-                bloque->der = nullptr;
-                liberarmemoria(bloque, actual);  // Intentar fusionar hacia arriba
-            }
+            delete bloque->procesoqueocupa;
+            bloque->procesoqueocupa = nullptr;
         } else {
-            // Liberar en los bloques hijos si están libres
-            if (bloque->izq != nullptr && bloque->izq->libre) {
-                bloque->izq = nullptr;
-            }
             liberarmemoria(bloque->izq, actual);
-
-            if (bloque->der != nullptr && bloque->der->libre) {
-                bloque->der = nullptr;
+            if (bloque->izq != nullptr && bloque->izq->libre == true) {
+                delete bloque->izq;
+                bloque->izq = nullptr;
             }
             liberarmemoria(bloque->der, actual);
+            if (bloque->der != nullptr && bloque->der->libre == true) {
+                delete bloque->der;
+                bloque->der = nullptr;
+            }
         }
     }
-}
-
-
-void imprimir_memoria(){
-   cout << endl;
-   for (int i = 1; i <= 96; ++i) {
-    bool imprimir = true; 
-    for (int j = 0; j < memoria.size(); ++j) {
-        if (memoria[j] == i) {
-            imprimir = false;
-            break;
-        }
-    }
-    (imprimir) ? cout << "█" : cout << " ";
-}
-   cout <<endl;
-
 }
 // Funcion para imprimir los procesos (se cambiara mas tarde si queremos gui)
 void imprimir_procesos(){
@@ -166,25 +160,7 @@ void imprimir_procesos(){
     cout << "Proceso " << actual.idproceso << " (" << actual.tamaño << "," << actual.quantumproceso << ") " << endl;
    }
 }
-void llenarvector(BLOQUE_DE_MEMORIA* bloque,int tamañototal,bool izq,bool der){
-   int tamaño;
-   if(izq==true){
-       if(bloque->izq!=nullptr && bloque->der!=nullptr){
-          tamaño = tamañototal/2;
-          memoria.push_back(tamaño);
-          llenarvector(bloque->izq,tamaño,true,false);
-          llenarvector(bloque->der,tamaño,false,true);
-       }
-   }
-   if(der==true){
-        if(bloque->izq!=nullptr && bloque->der!=nullptr){
-          tamaño = tamaño + (tamañototal/2);
-          memoria.push_back(tamaño);
-          llenarvector(bloque->izq,tamaño,true,false);
-          llenarvector(bloque->der,tamaño,false,true);
-        }
-   }
-}
+
 //Esta funcion genera un proceso aleatorio y cambia el id de los procesos para sumarlo en 1
 PROCESO generar_proceso(int& id_procesos){
 
@@ -214,6 +190,8 @@ void PLANIFICADOR(){
     while(true){
 
         clear();
+        imprimirMemoriaRecursiva(MEMORIA);
+        cout << endl;
         imprimir_procesos();
         //llenarvector(MEMORIA,96,true,false);
         //imprimir_memoria();
@@ -222,14 +200,16 @@ void PLANIFICADOR(){
 
         bool sepuede = sepuededividir(MEMORIA,&PorEntrar);
         cout << "Proceso por entrar: "<<"("<<PorEntrar.idproceso<<","<<PorEntrar.tamaño<<","<<PorEntrar.quantumproceso<<")"<<endl;
-        sleep(2);
+        sleep(5);
         if(sepuede){
             Cola_procesos.push_back(PorEntrar);
             PROCESO begin = Cola_procesos.front();
             clear();
+            imprimirMemoriaRecursiva(MEMORIA);
+            cout << endl;
             imprimir_procesos();
             cout << "Proceso a ejecutar: "<<"("<<begin.idproceso<<","<<begin.tamaño<<","<<begin.quantumproceso<<")"<<endl;
-            sleep(2);
+            sleep(5);
 
             begin.quantumproceso = begin.quantumproceso - QUANTUM_SYSTEM;
         
@@ -243,8 +223,10 @@ void PLANIFICADOR(){
                 Cola_procesos.push_back(begin);   
             }
             clear();
+            imprimirMemoriaRecursiva(MEMORIA);
+            cout << endl;
             imprimir_procesos();
-            sleep(2);
+            sleep(5);
             i+=1;
 
         }else{
@@ -252,9 +234,11 @@ void PLANIFICADOR(){
               cout << "Proceso por entrar: "<<"("<<PorEntrar.idproceso<<","<<PorEntrar.tamaño<<","<<PorEntrar.quantumproceso<<")"<<endl;
               PROCESO begin = Cola_procesos.front();
               clear();
+              imprimirMemoriaRecursiva(MEMORIA);
+              cout << endl;
               imprimir_procesos();
               cout << "Proceso a ejecutar: "<<"("<<begin.idproceso<<","<<begin.tamaño<<","<<begin.quantumproceso<<")"<<endl;
-              sleep(2);
+              sleep(5);
               begin.quantumproceso = begin.quantumproceso - QUANTUM_SYSTEM;
 
               if(begin.quantumproceso <= 0){
@@ -267,8 +251,10 @@ void PLANIFICADOR(){
               Cola_procesos.push_back(begin);
               }
               clear();
+              imprimirMemoriaRecursiva(MEMORIA);
+              cout << endl;
               imprimir_procesos();
-              sleep(2);
+              sleep(5);
         }
     }
 }
@@ -280,7 +266,7 @@ int main(){
    inicializarMemoria();
 
    //El id de los procesos
-   int id_procesos;
+   int id_procesos = 0;
    
    for(int i=0;i<10;i++){
      PROCESO proceso = generar_proceso(id_procesos);

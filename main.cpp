@@ -281,7 +281,6 @@ void PLANIFICADOR(){
 
         }else{
               cout << FG_RED<<endl<< "El proceso NO logro ser asignado en memoria!!"<<RESET_COLOR<<endl;
-              cout <<endl<< "Proceso por entrar: "<<"("<<PorEntrar.idproceso<<","<<PorEntrar.tamano<<","<<PorEntrar.quantumproceso<<")"<<endl;
               PROCESO begin = Cola_procesos.front();
               cout <<endl<<FG_MAGENTA<<".-------MEMORIA ACTUAL---------."<<RESET_COLOR<<endl<<endl;
               imprimirMemoriaRecursiva(MEMORIA);

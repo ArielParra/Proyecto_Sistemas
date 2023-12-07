@@ -66,7 +66,10 @@ unsigned int validarEntradaInt(){
 bool esValido = true; //bandera para validar entrada en el do while
 string entrada; //entrada del usuario
   do {
-    const string mensaje = "Ingrese el número N para el archivo nivel_N.txt: ";
+    const string mensaje = "Ingrese el QUANTUM DEL SISTEMA(MAXIMO): ";
+    const string mensaje2 = "Ingrese el QUANTUM DEL PROCESO(MAXIMO): ";
+    const string mensaje3 = "Ingrese el TAMAÑO DEL PROCESO(MAXIMO): ";
+    
     const string lineaDeCaptura = "-----";
     gotoxy(getmaxX()/2 - mensaje.size()/2, getmaxY()/2 - 1);
     cout<<mensaje;
@@ -97,10 +100,7 @@ string entrada; //entrada del usuario
           break; // Si se encuentra un carácter no numérico, salir del bucle
         }
       }
-      if (esValido && entrada.size()>lineaDeCaptura.size()) {//si no es un numero
-        esValido = false;
-        error="Error: Ingrese maximo "+ to_string(lineaDeCaptura.size()) + " digitos";
-      }
+      
       if(error.size()>0){ // debido al stoi
       cout<<FG_RED;
       mensajeCentrado(error);

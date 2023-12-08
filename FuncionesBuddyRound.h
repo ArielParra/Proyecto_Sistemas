@@ -315,6 +315,7 @@ inline void PLANIFICADOR(){
               }
         }
     }
+    Cola_procesos.clear();
 }
 
 #endif

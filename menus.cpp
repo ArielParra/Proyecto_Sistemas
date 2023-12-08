@@ -320,6 +320,7 @@ void menus(){
                Parametros(2);
           break;
           case 3:
+               
                generarprocesos();
                PLANIFICADOR();
                delete(MEMORIA);

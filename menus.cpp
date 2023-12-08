@@ -1,4 +1,3 @@
-#include "herenciaPoli.cpp"
 #include "FuncionesAuxiliares.h"
 #include "FuncionesBuddyRound.h"
 
@@ -69,10 +68,6 @@ inline void flecha_izquierda() {
 
 void primer_pantalla() {
   /*Primer Pantalla*/
- Maestro santiago("J. Santiago Cortés López", "Sistemas Operativos");
-  Alumno miguel("Miguel Ángel Batres Luna   ", 350553, 3, 'A');
-    Alumno alan("Juan Damián Ortega De Luna ", 351914, 3, 'A');
-   Alumno ariel("Ariel Emilio Parra Martínez", 280862, 3, 'A');
 
   clrscr();
   flecha_derecha();
@@ -82,16 +77,19 @@ void primer_pantalla() {
   logouaa();
   x = (getmaxX()/3) +20;
   y = (getmaxY() / 2) - (altura_grafico / 3);
+
   gotoxy(x,y++);
-  santiago.imprimirInformacion();
+  cout<<FG_BLUE <<"J. Santiago Cortés López\t "<<FG_MAGENTA <<" Materia: Sistemas Operativos"<<RESET_COLOR;
 
   gotoxy(x,y++);
   gotoxy(x,y++);
-  miguel.imprimirInformacion();
+  cout<<FG_MAGENTA <<"Integrantes del Equipo 3:"<<RESET_COLOR;
   gotoxy(x,y++);
-  alan.imprimirInformacion();
+  cout<<FG_CYAN<< "Miguel Ángel Batres Luna   " << FG_YELLOW << " ID: 350553";
   gotoxy(x,y++);
-  ariel.imprimirInformacion();
+  cout<<FG_CYAN<< "Juan Damián Ortega De Luna " << FG_YELLOW << " ID: 351914";
+  gotoxy(x,y++);
+  cout<<FG_CYAN<< "Ariel Emilio Parra Martínez" << FG_YELLOW << " ID: 280862";
   gotoxy(x,y++);
   fflush(stdout);
 }
@@ -225,7 +223,7 @@ void Parametros(int opcion){
 
           break;
       case KEY_DOWN:
-          if (seleccion < 3) {
+          if (seleccion < 2) {
             seleccion++;
           }
           break;
@@ -319,11 +317,10 @@ void menus(){
           case 2:
                Parametros(2);
           break;
-          case 3:
-               
+          case 3:       
                generarprocesos();
                PLANIFICADOR();
-               delete(MEMORIA);
+               //delete(MEMORIA); //esto daba seg fault
           break;
           case 4: //salir
             endCompat();

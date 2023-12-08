@@ -86,7 +86,7 @@ public:
     Alumno() : ID(), semestre(0), grrupo(' ') {}//constructor vacio
     Alumno(const string& nombre, unsigned int id, unsigned int semestre, char grupo) : ID(nombre, id), semestre(semestre), grrupo(grupo) {}
       void imprimirInformacion() const override {
-        cout <<FG_CYAN<<getNombre() <<RESET_COLOR<<FG_YELLOW<<" ID: " <<RESET_COLOR<< getID() <<FG_RED<< " Semestre: "<< getSemestre()<<RESET_COLOR<<FG_GREEN<< " grupo: "<<RESET_COLOR<< getGrupo();
+        cout <<FG_CYAN<<getNombre() <<RESET_COLOR<<FG_YELLOW<<" ID: " <<RESET_COLOR<< getID() <<FG_RED<< " Semestre: "<<RESET_COLOR<< getSemestre()<<FG_GREEN<< " grupo: "<<RESET_COLOR<< getGrupo();
     }
     unsigned int getSemestre() const{
       return this->semestre;

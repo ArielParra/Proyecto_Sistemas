@@ -69,8 +69,7 @@ inline void flecha_izquierda() {
 
 void primer_pantalla() {
   /*Primer Pantalla*/
- Maestro blanca("Blanca Guadalupe Estrada Renteria", "Estructuras de Datos");
-   Maestro juan("Juan Pedro Cisneros Santoyo      ", "Programacion II");
+ Maestro santiago("J. Santiago Cortés López", "Sistemas Operativos");
   Alumno miguel("Miguel Ángel Batres Luna   ", 350553, 3, 'A');
     Alumno alan("Juan Damián Ortega De Luna ", 351914, 3, 'A');
    Alumno ariel("Ariel Emilio Parra Martínez", 280862, 3, 'A');
@@ -84,9 +83,8 @@ void primer_pantalla() {
   x = (getmaxX()/3) +20;
   y = (getmaxY() / 2) - (altura_grafico / 3);
   gotoxy(x,y++);
-  blanca.imprimirInformacion();
-  gotoxy(x,y++);
-  juan.imprimirInformacion();
+  santiago.imprimirInformacion();
+
   gotoxy(x,y++);
   gotoxy(x,y++);
   miguel.imprimirInformacion();

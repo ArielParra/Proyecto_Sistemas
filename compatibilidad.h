@@ -3,11 +3,7 @@
 #define compatibilidad_h
 
 #include <iostream>
-void pausa() {
-  std::cout << std::endl << "Presione enter para continuar . . .";
- // std::cin.ignore();
-  std::cin.get();
-}
+
 
 #include <stdlib.h> //scanf(),printf()
 #include <unistd.h> //usleep()

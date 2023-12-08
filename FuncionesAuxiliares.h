@@ -2,7 +2,6 @@
 #ifndef FuncionesAuxiliares_h
 #define FuncionesAuxiliares_h
 
-#include "TiposDeDatos.h"
 #include "compatibilidad.h"
 
 #include <string>
@@ -15,16 +14,6 @@ using std::to_string;
 using std::cout; 
 using std::cin;
 
-string stringDireccion(Direccion dir){
-  //convierte la direccion a string para imprimir en pantalla
- switch(dir){
-    case ARRIBA:    return "↑ ARRIBA   "; break;
-    case ABAJO:     return "↓ ABAJO    "; break;
-    case IZQUIERDA: return "← IZQUIERDA"; break;
-    case DERECHA:   return "→ DERECHA  "; break;
-    default:        return "";            break; //para evitar el warning: control reaches end of non-void function [-Wreturn-type]
-  }
-}
 
 void recuadro(){
 #if defined(_WIN32)
@@ -61,14 +50,18 @@ void mensajeCentrado(const string mensaje){
   clrscr();
 }
 
-unsigned int validarEntradaInt(){
+unsigned int validarEntradaInt(int opcion){
 //funcion auxiliar para validar entrada de numeros
 bool esValido = true; //bandera para validar entrada en el do while
-string entrada; //entrada del usuario
+string entrada; //entrada del usuario 
+string mensaje;
   do {
-    const string mensaje = "Ingrese el QUANTUM DEL SISTEMA(MAXIMO): ";
-    const string mensaje2 = "Ingrese el QUANTUM DEL PROCESO(MAXIMO): ";
-    const string mensaje3 = "Ingrese el TAMAÑO DEL PROCESO(MAXIMO): ";
+    clrscr();
+    switch(opcion){
+      case 0: mensaje = "Ingrese el QUANTUM DEL SISTEMA(MAXIMO): ";break;
+      case 1: mensaje = "Ingrese el QUANTUM DEL PROCESO(MAXIMO): ";break;
+      case 2: mensaje = "Ingrese el TAMAÑO DEL PROCESO(MAXIMO): ";break;
+    }
     
     const string lineaDeCaptura = "-----";
     gotoxy(getmaxX()/2 - mensaje.size()/2, getmaxY()/2 - 1);
@@ -100,6 +93,10 @@ string entrada; //entrada del usuario
           break; // Si se encuentra un carácter no numérico, salir del bucle
         }
       }
+      if(std::stoi(entrada)>1024){
+          esValido = false;
+          error="Error: Excede el tamaño de memoria";
+      }
       
       if(error.size()>0){ // debido al stoi
       cout<<FG_RED;
@@ -107,10 +104,21 @@ string entrada; //entrada del usuario
       }
       
     }while (!esValido);//mientras no sea valido se pide por mas numeros
-    
+    if(esValido==true){
+       clrscr();
+       const string cargado="Dato Modificado Correctamente!";
+       cout<<FG_GREEN;
+       mensajeCentrado(cargado);
+    }
 return std::stoi(entrada);//se convierte a int
 }
-
+inline void PresioneTecla(){
+    gotoxy(getmaxX()/2-16,getmaxY()-2);
+    cout<<"Precione cualquier tecla para volver";
+    fflush(stdout);
+    usleep(50000);
+    getch();
+}
 
 
 #endif //FuncionesAuxiliares_h

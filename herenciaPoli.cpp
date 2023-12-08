@@ -1,4 +1,5 @@
 #include <iostream>
+#include "compatibilidad.h"
 using std::cout;
 using std::endl;
 
@@ -24,7 +25,7 @@ public:
     Persona(const string& nombre) : nombre(nombre) {}
     // Funcion virtual pura para la impresión
     virtual void imprimirInformacion() const {
-        cout << getNombre() << endl;
+        cout << getNombre();
     }
     void setNombre(string nombre){
       this->nombre = nombre;
@@ -49,7 +50,7 @@ public:
     // Implementación de la función virtual
     // Polimorfismo
     void imprimirInformacion() const override {
-        cout << getNombre() << ", ID: " << getID() << endl;
+        cout << getNombre() << " ID: " << getID();
     }
     virtual unsigned int getID() const{
       return this->id;
@@ -71,7 +72,7 @@ public:
     }
 
     void imprimirInformacion() const override {
-        cout << getNombre() << ", Materia: " << this->materiaDada << endl;
+        cout <<FG_BLUE<<getNombre() <<RESET_COLOR<<FG_MAGENTA<< " Materia: " <<RESET_COLOR<< this->materiaDada;
     }
 
 };
@@ -85,7 +86,7 @@ public:
     Alumno() : ID(), semestre(0), grrupo(' ') {}//constructor vacio
     Alumno(const string& nombre, unsigned int id, unsigned int semestre, char grupo) : ID(nombre, id), semestre(semestre), grrupo(grupo) {}
       void imprimirInformacion() const override {
-        cout << getNombre() << ", ID: " << getID() << ", Semestre: " << getSemestre() << ", grupo: "<< getGrupo() <<endl;
+        cout <<FG_CYAN<<getNombre() <<RESET_COLOR<<FG_YELLOW<<" ID: " <<RESET_COLOR<< getID() <<FG_RED<< " Semestre: "<< getSemestre()<<RESET_COLOR<<FG_GREEN<< " grupo: "<<RESET_COLOR<< getGrupo();
     }
     unsigned int getSemestre() const{
       return this->semestre;
@@ -104,7 +105,3 @@ public:
 
 
 };
-int main() {
- 
-    return 0;
-}

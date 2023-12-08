@@ -1,6 +1,11 @@
 #include "herenciaPoli.cpp"
 #include "FuncionesAuxiliares.h"
+#include "FuncionesBuddyRound.h"
 
+extern int tamano_MEMORIA; 
+extern unsigned int QUANTUM_SYSTEM;
+extern unsigned int tamanoprocesomax;
+extern unsigned int quantumprocesomax;
 
 
 
@@ -64,11 +69,10 @@ inline void flecha_izquierda() {
 
 void primer_pantalla() {
   /*Primer Pantalla*/
-  Maestro blanca("Blanca Guadalupe Estrada Renteria", "Estructuras de Datos");
-  Maestro juan("Juan Pedro Cisneros Santoyo      ", "Programacion II");
+ Maestro blanca("Blanca Guadalupe Estrada Renteria", "Estructuras de Datos");
+   Maestro juan("Juan Pedro Cisneros Santoyo      ", "Programacion II");
   Alumno miguel("Miguel Ángel Batres Luna   ", 350553, 3, 'A');
-    Alumno alan("Alan Gael Gallardo Jiménez ", 351914, 3, 'A');
- Alumno ernesto("Luis Ernesto López Cárdenas", 350346, 3, 'A');
+    Alumno alan("Juan Damián Ortega De Luna ", 351914, 3, 'A');
    Alumno ariel("Ariel Emilio Parra Martínez", 280862, 3, 'A');
 
   clrscr();
@@ -89,8 +93,6 @@ void primer_pantalla() {
   gotoxy(x,y++);
   alan.imprimirInformacion();
   gotoxy(x,y++);
-  ernesto.imprimirInformacion();
-  gotoxy(x,y++);
   ariel.imprimirInformacion();
   gotoxy(x,y++);
   fflush(stdout);
@@ -104,20 +106,21 @@ void segunda_pantalla() {
 
   int x = (getmaxX() / 2) - (ancho_grafico / 2),y = (getmaxY() / 2) - (altura_grafico/2);
   
-  gotoxy(x,y++); cout <<"██████╗░██╗░░░██╗██████╗░██████╗░██╗░░░██╗  ░██████╗██╗░░░██╗░██████╗████████╗███████╗███╗░░░███╗";
-  gotoxy(x,y++); cout <<"██╔══██╗██║░░░██║██╔══██╗██╔══██╗╚██╗░██╔╝  ██╔════╝╚██╗░██╔╝██╔════╝╚══██╔══╝██╔════╝████╗░████║";
-  gotoxy(x,y++); cout <<"██████╦╝██║░░░██║██║░░██║██║░░██║░╚████╔╝░  ╚█████╗░░╚████╔╝░╚█████╗░░░░██║░░░█████╗░░██╔████╔██║";
-  gotoxy(x,y++); cout <<"██╔══██╗██║░░░██║██║░░██║██║░░██║░░╚██╔╝░░  ░╚═══██╗░░╚██╔╝░░░╚═══██╗░░░██║░░░██╔══╝░░██║╚██╔╝██║";
-  gotoxy(x,y++); cout <<"██████╦╝╚██████╔╝██████╔╝██████╔╝░░░██║░░░  ██████╔╝░░░██║░░░██████╔╝░░░██║░░░███████╗██║░╚═╝░██║";
-  gotoxy(x,y++); cout <<"╚═════╝░░╚═════╝░╚═════╝░╚═════╝░░░░╚═╝░░░  ╚═════╝░░░░╚═╝░░░╚═════╝░░░░╚═╝░░░╚══════╝╚═╝░░░░░╚═╝";
+  cout << FG_BLUE;
+  gotoxy(x,y++); cout <<"██████╗ ██╗   ██╗██████╗ ██████╗ ██╗   ██╗   ██████╗██╗   ██╗ ██████╗████████╗███████╗███╗   ███╗";
+  gotoxy(x,y++); cout <<"██╔══██╗██║   ██║██╔══██╗██╔══██╗╚██╗ ██╔╝  ██╔════╝╚██╗ ██╔╝██╔════╝╚══██╔══╝██╔════╝████╗ ████║";
+  gotoxy(x,y++); cout <<"██████╦╝██║   ██║██║  ██║██║  ██║ ╚████╔╝   ╚█████╗  ╚████╔╝ ╚█████╗    ██║   █████╗  ██╔████╔██║";
+  gotoxy(x,y++); cout <<"██╔══██╗██║   ██║██║  ██║██║  ██║  ╚██╔╝     ╚═══██╗  ╚██╔╝   ╚═══██╗   ██║   ██╔══╝  ██║╚██╔╝██║";
+  gotoxy(x,y++); cout <<"██████╦╝╚██████╔╝██████╔╝██████╔╝   ██║     ██████╔╝   ██║   ██████╔╝   ██║   ███████╗██║ ╚═╝ ██║";
+  gotoxy(x,y++); cout <<"╚═════╝  ╚═════╝ ╚═════╝ ╚═════╝    ╚═╝     ╚═════╝    ╚═╝   ╚═════╝    ╚═╝   ╚══════╝╚═╝     ╚═╝"<<RESET_COLOR;
   
-  
-  gotoxy(x,y++); cout <<"   ██████╗░░█████╗░██╗░░░██╗███╗░░██╗██████╗░  ██████╗░░█████╗░██████╗░██████╗░██╗███╗░░██╗";
-  gotoxy(x,y++); cout <<"   ██╔══██╗██╔══██╗██║░░░██║████╗░██║██╔══██╗  ██╔══██╗██╔══██╗██╔══██╗██╔══██╗██║████╗░██║";
-  gotoxy(x,y++); cout <<"   ██████╔╝██║░░██║██║░░░██║██╔██╗██║██║░░██║  ██████╔╝██║░░██║██████╦╝██████╦╝██║██╔██╗██║";
-  gotoxy(x,y++); cout <<"   ██╔══██╗██║░░██║██║░░░██║██║╚████║██║░░██║  ██╔══██╗██║░░██║██╔══██╗██╔══██╗██║██║╚████║";
-  gotoxy(x,y++); cout <<"   ██║░░██║╚█████╔╝╚██████╔╝██║░╚███║██████╔╝  ██║░░██║╚█████╔╝██████╦╝██████╦╝██║██║░╚███║";
-  gotoxy(x,y++); cout <<"   ╚═╝░░╚═╝░╚════╝░░╚═════╝░╚═╝░░╚══╝╚═════╝░  ╚═╝░░╚═╝░╚════╝░╚═════╝░╚═════╝░╚═╝╚═╝░░╚══╝";
+  cout << FG_CYAN;
+  gotoxy(x,y++); cout <<"   ██████╗  █████╗ ██╗   ██╗███╗  ██╗██████╗   ██████╗  █████╗ ██████╗ ██████╗ ██╗███╗  ██╗";
+  gotoxy(x,y++); cout <<"   ██╔══██╗██╔══██╗██║   ██║████╗ ██║██╔══██╗  ██╔══██╗██╔══██╗██╔══██╗██╔══██╗██║████╗ ██║";
+  gotoxy(x,y++); cout <<"   ██████╔╝██║  ██║██║   ██║██╔██╗██║██║  ██║  ██████╔╝██║  ██║██████╦╝██████╦╝██║██╔██╗██║";
+  gotoxy(x,y++); cout <<"   ██╔══██╗██║  ██║██║   ██║██║╚████║██║  ██║  ██╔══██╗██║  ██║██╔══██╗██╔══██╗██║██║╚████║";
+  gotoxy(x,y++); cout <<"   ██║  ██║╚█████╔╝╚██████╔╝██║ ╚███║██████╔╝  ██║  ██║╚█████╔╝██████╦╝██████╦╝██║██║ ╚███║";
+  gotoxy(x,y++); cout <<"   ╚═╝  ╚═╝ ╚════╝  ╚═════╝ ╚═╝  ╚══╝╚═════╝   ╚═╝  ╚═╝ ╚════╝ ╚═════╝ ╚═════╝ ╚═╝╚═╝  ╚══╝"<<RESET_COLOR;
   fflush(stdout);
 }
 
@@ -126,14 +129,14 @@ void tercer_pantalla(int seleccion) {
   clrscr();
   flecha_izquierda();
   fflush(stdout);
-  const char *colores[] = {FG_CYAN, FG_MAGENTA, FG_BLUE, FG_YELLOW};
-  const char *opciones1[] = {"█▀█ █ █ ▄▀█ █▄ █ ▀█▀ █ █ █▀▄▀█   █▀ █▄█ █▀ ▀█▀ █▀▀ █▀▄▀█",  "█▀█ █ █ ▄▀█ █▄ █ ▀█▀ █ █ █▀▄▀█  █▀█ █▀█ █▀█ █▀▀ █▀▀ █▀ █▀","","█▀ █ █▀▄▀█ █ █ █   ▄▀█ █▀▀ █ █▀█ █▄ █","█▀ ▄▀█ █   █ █▀█"};
-  const char *opciones2[] = {"▀▀█ █▄█ █▀█ █ ▀█  █  █▄█ █ ▀ █   ▄█  █  ▄█  █  ██▄ █ ▀ █",  "▀▀█ █▄█ █▀█ █ ▀█  █  █▄█ █ ▀ █  █▀▀ █▀▄ █▄█ █▄▄ ██▄ ▄█ ▄█","","▄█ █ █ ▀ █ █▄█ █▄▄ █▀█ █▄▄ █ █▄█ █ ▀█","▄█ █▀█ █▄▄ █ █▀▄"};
+  const char *colores[] = {FG_CYAN, FG_MAGENTA, FG_BLUE,FG_GREEN, FG_YELLOW};
+  const char *opciones1[] = {"█▀█ █ █ ▄▀█ █▄ █ ▀█▀ █ █ █▀▄▀█   █▀ █▄█ █▀ ▀█▀ █▀▀ █▀▄▀█",  "█▀█ █ █ ▄▀█ █▄ █ ▀█▀ █ █ █▀▄▀█  █▀█ █▀█ █▀█ █▀▀ █▀▀ █▀ █▀","▀█▀ ▄▀█ █▀▄▀█ ▄▀█ █▄ █ █▀█  █▀█ █▀█ █▀█ █▀▀ █▀▀ █▀ █▀","█▀ █ █▀▄▀█ █ █ █   ▄▀█ █▀▀ █ █▀█ █▄ █","█▀ ▄▀█ █   █ █▀█"};
+  const char *opciones2[] = {"▀▀█ █▄█ █▀█ █ ▀█  █  █▄█ █ ▀ █   ▄█  █  ▄█  █  ██▄ █ ▀ █",  "▀▀█ █▄█ █▀█ █ ▀█  █  █▄█ █ ▀ █  █▀▀ █▀▄ █▄█ █▄▄ ██▄ ▄█ ▄█"," █  █▀█ █ ▀ █ █▀█ █ ▀█ █▄█  █▀▀ █▀▄ █▄█ █▄▄ ██▄ ▄█ ▄█","▄█ █ █ ▀ █ █▄█ █▄▄ █▀█ █▄▄ █ █▄█ █ ▀█","▄█ █▀█ █▄▄ █ █▀▄"};
 
   const int altura_grafico = 12, ancho_grafico = 66;
   int x = (getmaxX() / 2) - (ancho_grafico / 2),y = (getmaxY() / 2) - (altura_grafico/2);
  
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 5; i++) {
     cout<<colores[i];
     if (i == seleccion) {
       gotoxy(x,y++);cout << "    ▀▄  " << opciones1[i];
@@ -150,19 +153,50 @@ void tercer_pantalla(int seleccion) {
   fflush(stdout);
 
 }
-void MenuConsulta(int seleccion) {
+
+void consultardato(int opcion) {
   /*tercer Pantalla*/
   clrscr();
-  flecha_izquierda();
   fflush(stdout);
-  const char *colores[] = {FG_CYAN, FG_MAGENTA, FG_BLUE, FG_YELLOW};
-  const char *opciones1[] = {"",  "█▀█ █ █ ▄▀█ █▄ █ ▀█▀ █ █ █▀▄▀█  █▀█ █▀█ █▀█ █▀▀ █▀▀ █▀ █▀","","█▀ █ █▀▄▀█ █ █ █   ▄▀█ █▀▀ █ █▀█ █▄ █","█▀ ▄▀█ █   █ █▀█"};
-  const char *opciones2[] = {"",  "▀▀█ █▄█ █▀█ █ ▀█  █  █▄█ █ ▀ █  █▀▀ █▀▄ █▄█ █▄▄ ██▄ ▄█ ▄█","","▄█ █ █ ▀ █ █▄█ █▄▄ █▀█ █▄▄ █ █▄█ █ ▀█","▄█ █▀█ █▄▄ █ █▀▄"};
+  string dato;
+  string mensaje;
+  
+  switch(opcion){
+    case 0:
+      dato = to_string(QUANTUM_SYSTEM);
+      mensaje = "El Quantum maximo del sistema es: "+dato;
+    break;
+    case 1:
+    dato = to_string(quantumprocesomax);
+      mensaje = "El Quantum maximo para los procesos es: "+dato;
+    break;
+    case 2:
+    dato = to_string(tamanoprocesomax);
+      mensaje = "El tamaño maximo para los procesos es: "+dato;
+    break;
+  }
 
-  const int altura_grafico = 12, ancho_grafico = 66;
+  const int altura_grafico = 1, ancho_grafico = 42;
+  int x = (getmaxX() / 2) - (ancho_grafico / 2),y = (getmaxY() / 2) - (altura_grafico/2);
+   
+  gotoxy(x,y++);
+  cout << mensaje;
+  fflush(stdout);
+  PresioneTecla();
+
+}
+void MenuParametros(int seleccion) {
+  /*tercer Pantalla*/
+  clrscr();
+  fflush(stdout);
+  const char *colores[] = {FG_CYAN, FG_MAGENTA, FG_BLUE};
+  const char *opciones1[] = {"█▀▀ █▀█ █▄ █ █▀ █ █ █   ▀█▀ ▄▀█ █▀█","█▀▄▀█ █▀█ █▀▄ █ █▀▀ █ █▀▀ ▄▀█ █▀█","█▀ ▄▀█ █   █ █▀█"};
+  const char *opciones2[] = {"█▄▄ █▄█ █ ▀█ ▄█ █▄█ █▄▄  █  █▀█ █▀▄","█ ▀ █ █▄█ █▄▀ █ █▀  █ █▄▄ █▀█ █▀▄","▄█ █▀█ █▄▄ █ █▀▄"};
+
+  const int altura_grafico = 8, ancho_grafico = 44;
   int x = (getmaxX() / 2) - (ancho_grafico / 2),y = (getmaxY() / 2) - (altura_grafico/2);
  
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 3; i++) {
     cout<<colores[i];
     if (i == seleccion) {
       gotoxy(x,y++);cout << "    ▀▄  " << opciones1[i];
@@ -179,80 +213,64 @@ void MenuConsulta(int seleccion) {
   fflush(stdout);
 
 }
+void Parametros(int opcion){
+  int seleccion = 0;
 
-void pantalla_Tabla(unsigned int numNivel){
-  clrscr();
-   Nivel nivel(numNivel);
-  if(nivel.cargarNivel()){
-    vector<string> matriz = nivel.getTableroNivel();
-    Tabla tablaSolucion = Tabla(matriz);
-    tablaSolucion.printTabla();
-    gotoxy(getmaxX()/2 - nivel.getNombreNivel().size()/2, getmaxY()/2 - tablaSolucion.getAltoTablero()/2 - 2);
-    cout<<nivel.getNombreNivel();
- 
-    gotoxy(getmaxX()/2 - tablaSolucion.getAnchoTablero()/2, getmaxY()/2 + tablaSolucion.getAltoTablero()/2 + 2);
-    cout<<"Alto : "<< nivel.getAltoNivel();
-    gotoxy(getmaxX()/2 - tablaSolucion.getAnchoTablero()/2, getmaxY()/2 + tablaSolucion.getAltoTablero()/2 + 3);
-    cout<<"Ancho: "<< nivel.getAnchoNivel();
-    const string salir="Presione Cualquier tecla para salir";
-    gotoxy(getmaxX()/2 - salir.size()/2, getmaxY()/2 + tablaSolucion.getAltoTablero()/2 + 5 );
-    cout<<FG_BLUE<<salir<<RESET_COLOR;fflush(stdout);
-    getch();  
-    
-    }//nivel cargado
+  bool salir = false;
+  while (!salir) {
+    MenuParametros(seleccion);
+    switch (getch()) {
+      case KEY_UP:
+          if (seleccion > 0) {
+            seleccion--;
+          }
 
+          break;
+      case KEY_DOWN:
+          if (seleccion < 3) {
+            seleccion++;
+          }
+          break;
+      case KEY_ENTER:
+          switch (seleccion) {
+          case 0: 
+             switch(opcion){
+               case 0: consultardato(0);break;
+               
+               case 1: consultardato(1);break;
+
+               case 2: consultardato(2);break;
+             }
+            break;
+          case 1:
+            switch(opcion){
+               case 0:  QUANTUM_SYSTEM = validarEntradaInt(0); break;
+               
+               case 1:  quantumprocesomax = validarEntradaInt(1);break;
+
+               case 2:  tamanoprocesomax = validarEntradaInt(2);break;
+             }
+          break;
+          case 2: //salir
+            salir = true;
+            break;
+          }
+      break;
+      }// getch
+    }//while
 }
-
-
-void pantalla_Solucion(unsigned int numNivel){
-    clrscr();
-   Nivel nivel(numNivel);
-  if(nivel.cargarNivel()){
-   vector<string> matriz = nivel.getTableroNivel();
-    Tabla tablaSolucion = Tabla(matriz);
-    
-    //tablaSolucion.imprimirBloques();
-
-    Klotski klotski = (tablaSolucion);
-    unsigned int solucion = klotski.solucionador();
-      clrscr();
-      
-      if(solucion==0){
-        const string sinSolucionn="No Existe Solucion!";
-        cout<<FG_RED;
-        mensajeCentrado(sinSolucionn);
-      }else{
-        const string mensajeSolucion="Solucion Encontrada!";
-        cout<<FG_GREEN;
-        mensajeCentrado(mensajeSolucion);
-        klotski.printMovimientosSolucion(solucion,nivel.getNombreNivel());//pasos para la solucion
-      }
-  }
+void generarprocesos(){
+  int id_procesos = 0;
+  for(int i=0;i<1000;i++){
+     PROCESO proceso = generar_proceso(id_procesos);
+     Cola_lista.push_back(proceso);
+   }
 }
-   
-
-unsigned int elegirNivel(){
-clrscr();
-bool nivelCargado=false;//para el while
-unsigned int N=validarEntradaInt();
-  do{
-  Nivel nivel(N);
-  if(!nivel.cargarNivel()){
-    N=validarEntradaInt();
-  }else{
-    const string cargado="Nivel '" + to_string(N) + "' cargado con exito!";
-    cout<<FG_GREEN;
-    mensajeCentrado(cargado);
-    nivelCargado=true;
-    }//nivel cargado
-  }while(!nivelCargado);
-  return N;
-}
-
 
 
 void menus(){
  int pantalla = 1, seleccion = 0;
+ int id_procesos = 0;
 
   bool salir = false;
   while (!salir) {
@@ -287,7 +305,7 @@ void menus(){
 
           break;
       case KEY_DOWN:
-          if (pantalla == 3 && seleccion < 3) {
+          if (pantalla == 3 && seleccion < 4) {
             seleccion++;
           }
           break;
@@ -295,16 +313,18 @@ void menus(){
         if (pantalla == 3) {
           switch (seleccion) {
           case 0: //niveles
-            //modificar()
+               Parametros(0);
             break;
           case 1:
-            
+               Parametros(1);
               break;
           case 2:
-          
+               Parametros(2);
           break;
           case 3:
-
+               generarprocesos();
+               PLANIFICADOR();
+               delete(MEMORIA);
           break;
           case 4: //salir
             endCompat();

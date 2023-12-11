@@ -311,59 +311,7 @@ int x=0,y=0;
   MenuMemoriaTam_F(x,y);
   fflush(stdout);
 }
-void MenuMemoria(){
- string cargado;
-  int seleccion2 = 0;
-  bool salida = false;
-  clrscr();
-  int x=getmaxX()/2-(35/2);
-  int y=getmaxY()/2-1;
 
-  while (salida == false) {
-    MenuMemoriaTam(seleccion2);
-    switch (getch()) {
-    case KEY_LEFT:
-      if (seleccion2 > 0) {
-        seleccion2--;
-      }
-      break;
-    case KEY_RIGHT:
-      if (seleccion2 < 2) {
-        seleccion2++;
-      }
-      break;
-    case KEY_ENTER: //windows
-      switch (seleccion2) {
-      case 0:
-        tamano_MEMORIA = 1024;
-        clrscr();
-       cargado="Dato Modificado Correctamente!";
-       cout<<FG_GREEN;
-       mensajeCentrado(cargado);
-        salida = true;
-        break;
-      case 1:
-        tamano_MEMORIA = 4096;
-        clrscr();
-       cargado="Dato Modificado Correctamente!";
-       cout<<FG_GREEN;
-       mensajeCentrado(cargado);
-        salida = true;
-        break;
-      case 2:
-        tamano_MEMORIA = 8192;
-        clrscr();
-       cargado="Dato Modificado Correctamente!";
-       cout<<FG_GREEN;
-       mensajeCentrado(cargado);
-        salida = true;
-        break;
-      }//seleccion
-      clrscr();//arregla un error
-      break;
-    }//switch
-  }
-}
 void menusimulacion(){
   int seleccion = 0;
 
@@ -568,7 +516,6 @@ void menus(){
           break;       
           case 5:    
            menusimulacion();
-           PLANIFICADOR(intervalo_Tiempo);
                //delete(MEMORIA); //esto daba seg fault
           break;
           case 6: //salir

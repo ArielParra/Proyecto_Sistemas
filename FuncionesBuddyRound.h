@@ -216,7 +216,7 @@ void generarprocesos(){
    }
 }
 // ESTE ES EL PLANIFICADOR ROUND ROBIN
-inline void PLANIFICADOR(int ms){
+inline void PLANIFICADOR(int ms,bool tiempo){
     clrscr();
     unsigned int id_procesos = 0;
     inicializarMemoria();
@@ -225,7 +225,7 @@ inline void PLANIFICADOR(int ms){
     int i=0;
     int ch = 0;
     bool salida = true;
-    while(!kbhit()){
+    while(salida){
         cout <<FG_MAGENTA<<".-------MEMORIA ACTUAL---------."<<RESET_COLOR<<endl<<endl;
         imprimirMemoriaRecursiva(MEMORIA);
         cout << endl;
@@ -236,10 +236,17 @@ inline void PLANIFICADOR(int ms){
 
         cout <<endl<<FG_BLUE<< "Proceso por entrar: "<<"("<<PorEntrar.idproceso<<","<<PorEntrar.tamano<<","<<PorEntrar.quantumproceso<<")"<<RESET_COLOR<<endl;
         
-        //cout << endl << "Presione enter para continuar" << endl;
-        //if(!continuar()){salida = false; break;}
-        delay(ms);
-
+        if(tiempo){
+            delay(ms);
+            if(kbhit()){
+            cout << endl << "Presione enter para continuar" << endl;
+            if(!continuar()){salida = false; break;}
+            }
+        }else{
+            cout << endl << "Presione enter para continuar" << endl;
+            if(!continuar()){salida = false; break;}
+        }
+        
         if(asignarMemoria(PorEntrar,MEMORIA)){
             cout <<endl<<FG_YELLOW<< "El proceso logro ser asignado en memoria!!"<<RESET_COLOR<<endl;
             Cola_procesos.push_back(PorEntrar);
@@ -251,9 +258,16 @@ inline void PLANIFICADOR(int ms){
             imprimir_procesos();
             cout << endl<<FG_RED<<"Proceso a ejecutar: "<<FG_YELLOW<<"("<<begin.idproceso<<","<<begin.tamano<<","<<begin.quantumproceso<<")"<<RESET_COLOR<<endl;
             
-            //cout << endl << "Presione enter para continuar" << endl;
-            //if(!continuar()){salida = false; break;}
+            if(tiempo){
             delay(ms);
+            if(kbhit()){
+            cout << endl << "Presione enter para continuar" << endl;
+            if(!continuar()){salida = false; break;}
+            }
+        }else{
+            cout << endl << "Presione enter para continuar" << endl;
+            if(!continuar()){salida = false; break;}
+        }
 
             reducirQuantumProceso(MEMORIA,begin.idproceso);
             begin.quantumproceso -= QUANTUM_SYSTEM;
@@ -285,10 +299,16 @@ inline void PLANIFICADOR(int ms){
               imprimir_procesos();
               cout << endl<< FG_RED<<"Proceso a ejecutar: "<<FG_YELLOW<<"("<<begin.idproceso<<","<<begin.tamano<<","<<begin.quantumproceso<<")"<<RESET_COLOR<<endl;
               
-              //cout << endl << "Presione enter para continuar" << endl;
-              //if(!continuar()){salida = false; break;}
-              delay(ms);
-    
+               if(tiempo){
+            delay(ms);
+            if(kbhit()){
+            cout << endl << "Presione enter para continuar" << endl;
+            if(!continuar()){salida = false; break;}
+            }
+        }else{
+            cout << endl << "Presione enter para continuar" << endl;
+            if(!continuar()){salida = false; break;}
+        }
               reducirQuantumProceso(MEMORIA,begin.idproceso);
               begin.quantumproceso -= QUANTUM_SYSTEM;
               cout <<endl<< FG_CYAN<< "Proceso "<<begin.idproceso<<" EJECUTADO!!"<<RESET_COLOR<<endl<<endl;

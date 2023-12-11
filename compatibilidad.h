@@ -141,13 +141,13 @@ inline void clrscr() {system("cls");}
 
       inline void endCompat() { 
         clrscr();
-        std::cout<<CURSOR_ON;
+        printf(CURSOR_ON);
     }
     inline void startCompat() {
         setANSI();
         clrscr();
         setUTF8();
-        std::cout<<CURSOR_OFF;
+        printf(CURSOR_OFF);
         if(getmaxX()<120 || getmaxY()<27){
             endCompat();
             std::cout<<"ERROR: Debes poner la pantalla completa porfavor";
@@ -224,30 +224,34 @@ void clrscr() { printf(CLEAR_SCREEN);fflush(stdout); }
     }
     #define _getche getche
 
-    void startCompat() {   
-    clrscr();
-    initscr();            // Iniciar el modo curses
-    std::cout<<CURSOR_OFF; 
-    keypad(stdscr, TRUE); // Habilita el uso de teclas como las flechas, etc.
-    noecho();             // sin echo() de  getch() como en conio.h
-    cbreak();             // Se para con ctrl +C como en Windows
-    refresh();            // actualiza la pantalla
-    }
-
-    void endCompat() {
-    refresh();
-    echo();
-    fflush(stdout);
-    std::cout<<CURSOR_ON;
-    endwin();
-    clrscr();
-    }
-
     //Compatibilidad con ncurses.h
     #undef  KEY_ENTER      // en ncurses es ctrl + m 
     #define KEY_ENTER '\n' // funciona como en Windows
-    int getmaxX() { return getmaxx(stdscr); }
-    int getmaxY() { return getmaxy(stdscr); } 
+    inline int getmaxX() { return getmaxx(stdscr); }
+    inline int getmaxY() { return getmaxy(stdscr); } 
+
+    inline void endCompat() {
+            refresh();
+            echo();
+            fflush(stdout);
+            std::cout<<CURSOR_ON;
+            endwin();
+            clrscr();
+        }
+    inline void startCompat() {   
+        clrscr();
+        initscr();            // Iniciar el modo curses
+        std::cout<<CURSOR_OFF; 
+        keypad(stdscr, TRUE); // Habilita el uso de teclas como las flechas, etc.
+        noecho();             // sin echo() de  getch() como en conio.h
+        cbreak();             // Se para con ctrl +C como en Windows
+        refresh();            // actualiza la pantalla
+        if(getmaxX()<145 || getmaxY()<27){
+            endCompat();
+            std::cout<<"ERROR: Debes poner la pantalla completa porfavor";
+            exit(0);
+        }
+    }
 
 #endif 
 

@@ -268,11 +268,13 @@ inline void PLANIFICADOR(int ms,bool tiempo){
             cout << endl << "Presione enter para continuar o flecha arriba para salir" << endl;
             if(!continuar()){salida = false; break;}
         }
-
+            cout <<endl<<FG_CYAN<< "Proceso "<<begin.idproceso<<" EJECUTADO!!"<<endl<<endl;
+            cout <<"Proceso "<<begin.idproceso<<"["<<begin.idproceso<<","<<begin.tamano<<","<<begin.quantumproceso<<"]"<<endl;
             reducirQuantumProceso(MEMORIA,begin.idproceso);
             begin.quantumproceso -= QUANTUM_SYSTEM;
+            cout <<"Proceso "<<begin.idproceso<<"["<<begin.idproceso<<","<<begin.tamano<<","<<begin.quantumproceso<<"]"<<RESET_COLOR<<endl<<endl;
 
-            cout <<endl<<FG_CYAN<< "Proceso "<<begin.idproceso<<" EJECUTADO!!"<<RESET_COLOR<<endl<<endl;
+            
             //Si el proceso es mayor que 0 quiere decir que todavia no ha acabado
             if(begin.quantumproceso <= 0){
                 Cola_procesos.erase(Cola_procesos.begin());
@@ -309,9 +311,11 @@ inline void PLANIFICADOR(int ms,bool tiempo){
             cout << endl << "Presione enter para continuar o flecha arriba para salir" << endl;
             if(!continuar()){salida = false; break;}
         }
-              reducirQuantumProceso(MEMORIA,begin.idproceso);
-              begin.quantumproceso -= QUANTUM_SYSTEM;
-              cout <<endl<< FG_CYAN<< "Proceso "<<begin.idproceso<<" EJECUTADO!!"<<RESET_COLOR<<endl<<endl;
+               cout <<endl<<FG_CYAN<< "Proceso "<<begin.idproceso<<" EJECUTADO!!"<<endl;
+            cout <<"Proceso "<<begin.idproceso<<"["<<begin.idproceso<<","<<begin.tamano<<"]"<<begin.quantumproceso<<endl;
+            reducirQuantumProceso(MEMORIA,begin.idproceso);
+            begin.quantumproceso -= QUANTUM_SYSTEM;
+            cout <<"Proceso "<<begin.idproceso<<"["<<begin.idproceso<<","<<begin.tamano<<"]"<<begin.quantumproceso<<RESET_COLOR<<endl<<endl;
               if(begin.quantumproceso <= 0){
                   Cola_procesos.erase(Cola_procesos.begin());
                   liberarmemoria(MEMORIA,begin);

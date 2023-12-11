@@ -169,11 +169,11 @@ void consultardato(int opcion) {
     break;
     case 2:
     dato = to_string(tamanoprocesomax);
-      mensaje = "El tamaño maximo para los procesos en MB es: "+dato;
+      mensaje = "El tamaño maximo para los procesos en KB es: "+dato;
     break;
     case 3:
     dato = to_string(tamano_MEMORIA);
-      mensaje = "El tamaño maximo para los procesos en MB es: "+ dato;
+      mensaje = "El tamaño maximo de la memoria en KB es: "+ dato;
     break;
     case 4:
         dato = to_string(intervalo_Tiempo);

@@ -44,8 +44,6 @@
 #define CURSOR_OFF           "\033[?25l"
 #define CLEAR_SCREEN        "\e[1;1H\e[2J"
 
-void clrscr() { printf(CLEAR_SCREEN);fflush(stdout); }
-
 /*Colores ANSI */
 /*Foreground*/
 #define FG_BLACK            "\x1b[30m"
@@ -69,6 +67,7 @@ void clrscr() { printf(CLEAR_SCREEN);fflush(stdout); }
 #define BG_DEFAULT          "\x1b[49m" 
 
 #if defined(_WIN32) || defined(_CYGWIN_) 
+inline void clrscr() {system("cls");}
 
     /*Teclas para getch()*/
     #define KEY_LEFT 75     //ascii 75 es K
@@ -124,25 +123,14 @@ void clrscr() { printf(CLEAR_SCREEN);fflush(stdout); }
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coordinate);
     }
     #include <stdlib.h>
-    void startCompat() {
-        std::cout<<CURSOR_OFF;
-        clrscr();
-        setANSI();
-        setUTF8();
-   }
-    void endCompat() { 
-        clrscr();
-        std::cout<<CURSOR_ON;
-    }
-
     /*Compatibilidad con ncurses.h*/
-    void reset_shell_mode(void){}
-    void reset_prog_mode(void){}
+    inline void reset_shell_mode(void){}
+    inline void reset_prog_mode(void){}
     int getmaxX(){
-            CONSOLE_SCREEN_BUFFER_INFO csbi;
-            GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE),&csbi);
-            return(csbi.srWindow.Right-csbi.srWindow.Left);
-        }
+        CONSOLE_SCREEN_BUFFER_INFO csbi;
+        GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE),&csbi);
+        return(csbi.srWindow.Right-csbi.srWindow.Left);
+    }
     int getmaxY(){
         CONSOLE_SCREEN_BUFFER_INFO csbi;
         GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE),&csbi);
@@ -151,7 +139,24 @@ void clrscr() { printf(CLEAR_SCREEN);fflush(stdout); }
     #define LINES getmaxY() 
     #define COLS getmaxX()
 
+      inline void endCompat() { 
+        clrscr();
+        std::cout<<CURSOR_ON;
+    }
+    inline void startCompat() {
+        setANSI();
+        clrscr();
+        setUTF8();
+        std::cout<<CURSOR_OFF;
+        if(getmaxX()<120 || getmaxY()<27){
+            endCompat();
+            std::cout<<"ERROR: Debes poner la pantalla completa porfavor";
+            exit(0);
+        }
+    }
+
 #else  //*NIX
+void clrscr() { printf(CLEAR_SCREEN);fflush(stdout); }
     /*Compatibilidad con Colores (Consola virtual de cmd)*/
     //En sistemas basados en Unix el sistema suele ya soportar esto asi que es implicito
     void setUTF8(void){};

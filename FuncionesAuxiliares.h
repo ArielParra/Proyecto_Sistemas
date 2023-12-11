@@ -3,6 +3,7 @@
 #define FuncionesAuxiliares_h
 
 #include "compatibilidad.h"
+int tamano_MEMORIA=1024;
 
 #include <string>
 using std::string; 
@@ -14,9 +15,10 @@ using std::to_string;
 using std::cout; 
 using std::cin;
 
+
 inline void PresioneTecla(){
     gotoxy(getmaxX()/2-18,getmaxY()-2);
-    cout<<"Precione cualquier tecla para volver";
+    cout<<"Precione la tecla espacio para volver";
     fflush(stdout);
     getch();
 }
@@ -67,6 +69,7 @@ string mensaje;
       case 0: mensaje = "Ingrese el QUANTUM DEL SISTEMA(MAXIMO): ";break;
       case 1: mensaje = "Ingrese el QUANTUM DEL PROCESO(MAXIMO): ";break;
       case 2: mensaje = "Ingrese el TAMAÑO DEL PROCESO(MAXIMO): ";break;
+      case 3: mensaje = "Ingrese el intervalo de tiempo de la simulación en ms: ";break;
     }
     
     const string lineaDeCaptura = "-----";
@@ -83,8 +86,6 @@ string mensaje;
       cout<<CURSOR_ON;
       getline(cin,entrada);
       cout<<CURSOR_OFF;
-      //para desaparecer cursor cuando se da enter
-      gotoxy(2,2);
       reset_prog_mode();//regresar a ncurses
       string error; 
       //solo se dio enter = error
@@ -95,13 +96,21 @@ string mensaje;
       for (char c : entrada) {
         if (!isdigit(c)) {//si no es un numero
           esValido = false;
-          error="Error: Ingrese unicamente números";
+          error="Error: Ingrese unicamente números positivos";
           break; // Si se encuentra un carácter no numérico, salir del bucle
         }
       }
-      if(std::stoi(entrada)>1024){
+      if (esValido && opcion!=3){
+        if(std::stoi(entrada)>tamano_MEMORIA){
           esValido = false;
-          error="Error: Excede el tamaño de memoria";
+          error="Error: Excede el tamaño de memoria de "+ to_string(tamano_MEMORIA) + "MB";
+        }
+      }
+      if (esValido && opcion==3){
+        if(std::stoi(entrada)>99999){
+          esValido = false;
+          error="Error: EL numero es más grande que 99999";
+        }
       }
       
       if(error.size()>0){ // debido al stoi
@@ -130,6 +139,7 @@ while(true){
                 break;
             case KEY_ENTER:
                 return true;
+                break;
             default:
                 break;
         }

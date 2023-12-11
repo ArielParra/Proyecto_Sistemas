@@ -165,20 +165,41 @@ void clrscr() { printf(CLEAR_SCREEN);fflush(stdout); }
     printf("%c[%d;%df", 0x1B, y, x);
     fflush(stdout);
     }
-
+/*
     int kbhit() {
-    int ch = 0, r = 0;
-    nodelay(stdscr, TRUE);
-    ch = getch();
-    if (ch == ERR) { // no input
-        r = FALSE;
-    } else { // input
-        r = TRUE;
-        ungetch(ch);
+        int ch = 0, r = 0;
+        nodelay(stdscr, TRUE);
+        ch = getch();
+        if (ch == ERR) { // no input
+            r = FALSE;
+        } else { // input
+            r = TRUE;
+            ungetch(ch);
+        }
+        nodelay(stdscr, FALSE);
+        return (r);
     }
-    nodelay(stdscr, FALSE);
-    return (r);
+*/
+    #include <sys/ioctl.h>
+    #include <termios.h>
+
+    bool kbhit()
+    {
+        termios term;
+        tcgetattr(0, &term);
+
+        termios term2 = term;
+        term2.c_lflag &= ~ICANON;
+        tcsetattr(0, TCSANOW, &term2);
+
+        int byteswaiting;
+        ioctl(0, FIONREAD, &byteswaiting);
+
+        tcsetattr(0, TCSANOW, &term);
+
+        return byteswaiting > 0;
     }
+
     #define _kbhit() kbhit()
 
     #include <string.h> //strcat()

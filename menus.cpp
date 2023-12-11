@@ -5,6 +5,7 @@ extern int tamano_MEMORIA;
 extern unsigned int QUANTUM_SYSTEM;
 extern unsigned int tamanoprocesomax;
 extern unsigned int quantumprocesomax;
+unsigned int intervalo_Tiempo = 50;
 
 
 
@@ -125,14 +126,14 @@ void tercer_pantalla(int seleccion) {
   clrscr();
   flecha_izquierda();
   fflush(stdout);
-  const char *colores[] = {FG_CYAN, FG_MAGENTA, FG_BLUE,FG_GREEN, FG_YELLOW,FG_RED};
-  const char *opciones1[] = {"█▀█ █ █ ▄▀█ █▄ █ ▀█▀ █ █ █▀▄▀█   █▀ █▄█ █▀ ▀█▀ █▀▀ █▀▄▀█", "█▀█ █ █ ▄▀█ █▄ █ ▀█▀ █ █ █▀▄▀█  █▀█ █▀█ █▀█ █▀▀ █▀▀ █▀ █▀","▀█▀ ▄▀█ █▀▄▀█ ▄▀█ █▄ █ █▀█  █▀█ █▀█ █▀█ █▀▀ █▀▀ █▀ █▀","▀█▀ ▄▀█ █▀▄▀█ ▄▀█ █▄ █ █▀█  █▀▄▀█ █▀▀ █▀▄▀█ █▀█ █▀█ █ ▄▀█","█▀ █ █▀▄▀█ █ █ █   ▄▀█ █▀▀ █ █▀█ █▄ █","█▀ ▄▀█ █   █ █▀█"};
-  const char *opciones2[] = {"▀▀█ █▄█ █▀█ █ ▀█  █  █▄█ █ ▀ █   ▄█  █  ▄█  █  ██▄ █ ▀ █", "▀▀█ █▄█ █▀█ █ ▀█  █  █▄█ █ ▀ █  █▀▀ █▀▄ █▄█ █▄▄ ██▄ ▄█ ▄█"," █  █▀█ █ ▀ █ █▀█ █ ▀█ █▄█  █▀▀ █▀▄ █▄█ █▄▄ ██▄ ▄█ ▄█"," █  █▀█ █ ▀ █ █▀█ █ ▀█ █▄█  █ ▀ █ ██▄ █ ▀ █ █▄█ █▀▄ █ █▀█","▄█ █ █ ▀ █ █▄█ █▄▄ █▀█ █▄▄ █ █▄█ █ ▀█","▄█ █▀█ █▄▄ █ █▀▄"};
+  const char *colores[] = {FG_CYAN, FG_MAGENTA, FG_BLUE,FG_GREEN, FG_YELLOW,FG_BLUE,FG_RED};
+  const char *opciones1[] = {"█▀█ █ █ ▄▀█ █▄ █ ▀█▀ █ █ █▀▄▀█   █▀ █▄█ █▀ ▀█▀ █▀▀ █▀▄▀█", "█▀█ █ █ ▄▀█ █▄ █ ▀█▀ █ █ █▀▄▀█  █▀█ █▀█ █▀█ █▀▀ █▀▀ █▀ █▀","▀█▀ ▄▀█ █▀▄▀█ ▄▀█ █▄ █ █▀█  █▀█ █▀█ █▀█ █▀▀ █▀▀ █▀ █▀","▀█▀ ▄▀█ █▀▄▀█ ▄▀█ █▄ █ █▀█  █▀▄▀█ █▀▀ █▀▄▀█ █▀█ █▀█ █ ▄▀█", "█ █▄ █ ▀█▀ █▀▀ █▀█ █ █ ▄▀█ █   █▀█","█▀ █ █▀▄▀█ █ █ █   ▄▀█ █▀▀ █ █▀█ █▄ █","█▀ ▄▀█ █   █ █▀█"};
+  const char *opciones2[] = {"▀▀█ █▄█ █▀█ █ ▀█  █  █▄█ █ ▀ █   ▄█  █  ▄█  █  ██▄ █ ▀ █", "▀▀█ █▄█ █▀█ █ ▀█  █  █▄█ █ ▀ █  █▀▀ █▀▄ █▄█ █▄▄ ██▄ ▄█ ▄█"," █  █▀█ █ ▀ █ █▀█ █ ▀█ █▄█  █▀▀ █▀▄ █▄█ █▄▄ ██▄ ▄█ ▄█"," █  █▀█ █ ▀ █ █▀█ █ ▀█ █▄█  █ ▀ █ ██▄ █ ▀ █ █▄█ █▀▄ █ █▀█", "█ █ ▀█  █  ██▄ █▀▄ ▀▄▀ █▀█ █▄▄ █▄█","▄█ █ █ ▀ █ █▄█ █▄▄ █▀█ █▄▄ █ █▄█ █ ▀█","▄█ █▀█ █▄▄ █ █▀▄"};
 
   const int altura_grafico = 20, ancho_grafico = 66;
   int x = (getmaxX() / 2) - (ancho_grafico / 2),y = (getmaxY() / 2) - (altura_grafico/2);
  
-  for (int i = 0; i < 6; i++) {
+  for (int i = 0; i < 7; i++) {
     cout<<colores[i];
     if (i == seleccion) {
       gotoxy(x,y++);cout << "    ▀▄  " << opciones1[i];
@@ -168,11 +169,15 @@ void consultardato(int opcion) {
     break;
     case 2:
     dato = to_string(tamanoprocesomax);
-      mensaje = "El tamaño maximo para los procesos es: "+dato;
+      mensaje = "El tamaño maximo para los procesos en MB es: "+dato;
     break;
     case 3:
     dato = to_string(tamano_MEMORIA);
-      mensaje = "El tamaño maximo para los procesos es: "+ dato;
+      mensaje = "El tamaño maximo para los procesos en MB es: "+ dato;
+    break;
+    case 4:
+        dato = to_string(intervalo_Tiempo);
+      mensaje = "El intervalo de tiempo de la simulación en ms es: "+ dato;
     break;
   }
 
@@ -360,6 +365,8 @@ void Parametros(int opcion){
                case 2: consultardato(2);break;
                
                case 3: consultardato(3);break;
+                
+              case 4: consultardato(4);break;
              }
             break;
           case 1:
@@ -371,6 +378,8 @@ void Parametros(int opcion){
                case 2:  tamanoprocesomax = validarEntradaInt(2);break;
               
                case 3: MenuMemoria();   break;
+
+               case 4:  intervalo_Tiempo= validarEntradaInt(3); break;
              }
           break;
           case 2: //salir
@@ -420,7 +429,7 @@ void menus(){
 
           break;
       case KEY_DOWN:
-          if (pantalla == 3 && seleccion < 5) {
+          if (pantalla == 3 && seleccion < 6) {
             seleccion++;
           }
           break;
@@ -439,11 +448,14 @@ void menus(){
           case 3:
                Parametros(3);
           break;
-          case 4:       
-               PLANIFICADOR();
+          case 4:
+              Parametros(4);
+          break;       
+          case 5:    
+           PLANIFICADOR(intervalo_Tiempo);
                //delete(MEMORIA); //esto daba seg fault
           break;
-          case 5: //salir
+          case 6: //salir
             endCompat();
             exit(0);
             break;

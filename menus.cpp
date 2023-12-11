@@ -5,7 +5,7 @@ extern int tamano_MEMORIA;
 extern unsigned int QUANTUM_SYSTEM;
 extern unsigned int tamanoprocesomax;
 extern unsigned int quantumprocesomax;
-unsigned int intervalo_Tiempo = 50;
+unsigned int intervalo_Tiempo = 2000;
 
 
 

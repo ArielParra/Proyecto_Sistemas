@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <iomanip>
 #include "compatibilidad.h"
+#include "FuncionesAuxiliares.h"
 using namespace std;
 
 int tamano_MEMORIA = 1024; 
@@ -149,31 +150,14 @@ inline void fusionarBloquesContiguos(BLOQUE_DE_MEMORIA* bloque,bool &salida) {
     
     if (bloque != nullptr && bloque->izq != nullptr && bloque->der != nullptr &&
         bloque->izq->procesoqueocupa==nullptr && bloque->der->procesoqueocupa==nullptr && bloque->der->libre && bloque->izq->libre) {
-        cout << "Condensando memoria.." <<endl;
+        cout <<endl<< "Condensando memoria.." <<endl;
         imprimirMemoriaRecursiva(MEMORIA);
-            cout << endl << "Presione enter para continuar" << endl;
-       do{
-            reset_prog_mode();
-            ch = getch();
-            reset_shell_mode();
-            if(ch ==KEY_UP){salida = false;break;}
-        }while(ch!=KEY_ENTER);
-        ch = 0;
+        cout <<endl;
         bloque->libre = true;
         delete bloque->izq;
         delete bloque->der;
         bloque->izq = nullptr;
         bloque->der = nullptr;
-        cout << "Condensando memoria.." <<endl;
-        imprimirMemoriaRecursiva(MEMORIA);
-            cout << endl << "Presione enter para continuar" << endl;
-      do{
-            reset_prog_mode();
-            ch = getch();
-            reset_shell_mode();
-            if(ch ==KEY_UP){salida = false;break;}
-        }while(ch!=KEY_ENTER);
-        ch = 0;
     }
 }
 
@@ -196,10 +180,16 @@ inline void liberarmemoria(BLOQUE_DE_MEMORIA* bloque, PROCESO actual) {
 }
 // Funcion para imprimir los procesos (se cambiara mas tarde si queremos gui)
 inline void imprimir_procesos(){
-   for(auto i = Cola_procesos.begin(); i != Cola_procesos.end(); ++i) {
-    PROCESO actual = *i;
-    cout << "Proceso " << actual.idproceso << " (" << actual.tamano << "," << actual.quantumproceso << ") " << endl;
-   }
+   for (const auto& actual : Cola_procesos) {
+        cout << "Proceso " << actual.idproceso << " [" << actual.idproceso << "," << actual.tamano << "," << actual.quantumproceso << "] ";
+        if (&actual == &Cola_procesos.front()) {
+            cout << FG_YELLOW << "-> Principio de la Lista" << RESET_COLOR;
+        }
+        if (&actual == &Cola_procesos.back() && &actual!=&Cola_procesos.front()) {
+            cout << FG_YELLOW << "-> Final de la Lista" << RESET_COLOR;
+        }
+        cout << endl;
+    }
 }
 
 //Esta funcion genera un proceso aleatorio y cambia el id de los procesos para sumarlo en 1
@@ -219,10 +209,20 @@ inline PROCESO generar_proceso(int& id_procesos){
 
     return proceso;
 }
+void generarprocesos(){
+  int id_procesos = 0;
+  for(int i=0;i<1000;i++){
+     PROCESO proceso = generar_proceso(id_procesos);
+     Cola_lista.push_back(proceso);
+   }
+}
 // ESTE ES EL PLANIFICADOR ROUND ROBIN
 inline void PLANIFICADOR(){
     const int ancho_pantalla=getmaxX()/2 - 40;    
     clrscr();
+    unsigned int id_procesos = 0;
+    inicializarMemoria();
+    generarprocesos();
     reset_shell_mode();
     int i=0;
     int ch = 0;
@@ -233,23 +233,18 @@ inline void PLANIFICADOR(){
         cout << endl;
         cout <<endl<<FG_MAGENTA<<"Lista de procesos "<<RESET_COLOR<<endl<<endl;
         imprimir_procesos();
-        
-        //llenarvector(MEMORIA,96,true,false);
-        //imprimir_memoria();
 
         PROCESO PorEntrar = Cola_lista[i];
 
-        cout <<endl<< "Proceso por entrar: "<<FG_BLUE<<"("<<PorEntrar.idproceso<<","<<PorEntrar.tamano<<","<<PorEntrar.quantumproceso<<")"<<RESET_COLOR<<endl;
-            cout << endl << "Presione enter para continuar" << endl;
-        do{
-            reset_prog_mode();
-            ch = getch();
-            reset_shell_mode();
-            if(ch ==KEY_UP){salida = false;break;}
-        }while(ch!=KEY_ENTER);
-        ch = 0;
+        cout <<endl<<FG_BLUE<< "Proceso por entrar: "<<"("<<PorEntrar.idproceso<<","<<PorEntrar.tamano<<","<<PorEntrar.quantumproceso<<")"<<RESET_COLOR<<endl;
+        
+        cout << endl << "Presione enter para continuar" << endl;
+        if(!continuar()){
+            salida = false; break;
+        }
+
         if(asignarMemoria(PorEntrar,MEMORIA)){
-            cout << FG_YELLOW<<endl<< "El proceso logro ser asignado en memoria!!"<<RESET_COLOR<<endl;
+            cout <<endl<<FG_YELLOW<< "El proceso logro ser asignado en memoria!!"<<RESET_COLOR<<endl;
             Cola_procesos.push_back(PorEntrar);
             PROCESO begin = Cola_procesos.front();
             cout <<endl<<FG_MAGENTA<< ".-------MEMORIA ACTUAL---------."<<RESET_COLOR<<endl<<endl;
@@ -259,25 +254,21 @@ inline void PLANIFICADOR(){
             imprimir_procesos();
             cout << endl<<FG_RED<<"Proceso a ejecutar: "<<FG_YELLOW<<"("<<begin.idproceso<<","<<begin.tamano<<","<<begin.quantumproceso<<")"<<RESET_COLOR<<endl;
             cout << endl << "Presione enter para continuar" << endl;
-              do{
-            reset_prog_mode();
-            ch = getch();
-            reset_shell_mode();
-            if(ch ==KEY_UP){salida = false;break;}
-        }while(ch!=KEY_ENTER);
-             ch = 0;
+            if(!continuar()){
+                salida = false; break;
+            }
             reducirQuantumProceso(MEMORIA,begin.idproceso);
             begin.quantumproceso -= QUANTUM_SYSTEM;
 
-            cout <<endl<<FG_CYAN<< "Proceso "<<begin.idproceso<<" EJECUTADO!!"<<RESET_COLOR<<endl;
+            cout <<endl<<FG_CYAN<< "Proceso "<<begin.idproceso<<" EJECUTADO!!"<<RESET_COLOR<<endl<<endl;
             //Si el proceso es mayor que 0 quiere decir que todavia no ha acabado
             if(begin.quantumproceso <= 0){
                 Cola_procesos.erase(Cola_procesos.begin());
                 liberarmemoria(MEMORIA,begin);
-                cout <<endl<<FG_MAGENTA<< ".-------MEMORIA ACTUAL---------."<<RESET_COLOR<<endl<<endl;
-                imprimirMemoriaRecursiva(MEMORIA);
-                cout << endl;
                 fusionarBloquesContiguos(MEMORIA,salida);
+                cout << endl;
+                imprimirMemoriaRecursiva(MEMORIA);
+                cout <<endl<<endl;
             }else{               
                 Cola_procesos.erase(Cola_procesos.begin());
                 //ESTA LINEA REPRESENTA QUE EL PROCESO SE ESTA EJECUTANDO
@@ -295,32 +286,20 @@ inline void PLANIFICADOR(){
               cout <<endl<<FG_MAGENTA<< "Lista de procesos "<<RESET_COLOR<<endl<<endl;
               imprimir_procesos();
               cout << endl<< FG_RED<<"Proceso a ejecutar: "<<FG_YELLOW<<"("<<begin.idproceso<<","<<begin.tamano<<","<<begin.quantumproceso<<")"<<RESET_COLOR<<endl;
-            cout << endl << "Presione enter para continuar" << endl;
-              do{
-            reset_prog_mode();
-            ch = getch();
-            reset_shell_mode();
-            if(ch ==KEY_UP){salida = false;break;}
-        }while(ch!=KEY_ENTER);
-              ch = 0;
+              cout << endl << "Presione enter para continuar" << endl;
+              if(!continuar()){
+                salida = false; break;
+              }
               reducirQuantumProceso(MEMORIA,begin.idproceso);
               begin.quantumproceso -= QUANTUM_SYSTEM;
-              cout <<endl<< FG_CYAN<< "Proceso "<<begin.idproceso<<" EJECUTADO!!"<<RESET_COLOR<<endl;
+              cout <<endl<< FG_CYAN<< "Proceso "<<begin.idproceso<<" EJECUTADO!!"<<RESET_COLOR<<endl<<endl;
               if(begin.quantumproceso <= 0){
                   Cola_procesos.erase(Cola_procesos.begin());
                   liberarmemoria(MEMORIA,begin);
-                  cout <<endl<< FG_MAGENTA<<".-------MEMORIA ACTUAL---------."<<RESET_COLOR<<endl<<endl;
-                  imprimirMemoriaRecursiva(MEMORIA);
-                  cout << endl;
-            cout << endl << "Presione enter para continuar" << endl;
-            do{
-            reset_prog_mode();
-            ch = getch();
-            reset_shell_mode();
-            if(ch ==KEY_UP){salida = false;break;}
-        }while(ch!=KEY_ENTER);
-                  ch = 0;
                   fusionarBloquesContiguos(MEMORIA,salida);
+                  cout <<endl;
+                  imprimirMemoriaRecursiva(MEMORIA);
+                  cout <<endl<<endl;
               }else{
 
               Cola_procesos.erase(Cola_procesos.begin());
@@ -330,6 +309,8 @@ inline void PLANIFICADOR(){
         }
     }
     Cola_procesos.clear();
+    Cola_lista.clear();
+    delete(MEMORIA);
     reset_prog_mode();
 }
 

@@ -179,17 +179,16 @@ inline void liberarmemoria(BLOQUE_DE_MEMORIA* bloque, PROCESO actual) {
 }
 // Funcion para imprimir los procesos (se cambiara mas tarde si queremos gui)
 inline void imprimir_procesos(){
-   for(auto i = Cola_procesos.begin(); i != Cola_procesos.end(); ++i) {
-    PROCESO actual = *i;
-    cout << "Proceso " << actual.idproceso << " ["<<actual.idproceso<<","<< actual.tamano << "," << actual.quantumproceso << "] ";
-    if(auto i == Cola_procesos.begin()){
-        cout <<FG_YELLOW<< "-> Principio de la Lista"<<RESET_COLOR;
+   for (const auto& actual : Cola_procesos) {
+        cout << "Proceso " << actual.idproceso << " [" << actual.idproceso << "," << actual.tamano << "," << actual.quantumproceso << "] ";
+        if (&actual == &Cola_procesos.front()) {
+            cout << FG_YELLOW << "-> Principio de la Lista" << RESET_COLOR;
+        }
+        if (&actual == &Cola_procesos.back() && &actual!=&Cola_procesos.front()) {
+            cout << FG_YELLOW << "-> Final de la Lista" << RESET_COLOR;
+        }
+        cout << endl;
     }
-    if(auto i == Cola_procesos.end()){
-        cout <<FG_YELLOW<<"-> Final de la Lista"<<RESET_COLOR;
-    }
-    cout <<endl;
-   }
 }
 
 //Esta funcion genera un proceso aleatorio y cambia el id de los procesos para sumarlo en 1
@@ -266,7 +265,7 @@ inline void PLANIFICADOR(){
             reducirQuantumProceso(MEMORIA,begin.idproceso);
             begin.quantumproceso -= QUANTUM_SYSTEM;
 
-            cout <<endl<<FG_CYAN<< "Proceso "<<begin.idproceso<<" EJECUTADO!!"<<RESET_COLOR<<endl;
+            cout <<endl<<FG_CYAN<< "Proceso "<<begin.idproceso<<" EJECUTADO!!"<<RESET_COLOR<<endl<<endl;
             //Si el proceso es mayor que 0 quiere decir que todavia no ha acabado
             if(begin.quantumproceso <= 0){
                 Cola_procesos.erase(Cola_procesos.begin());
@@ -302,7 +301,7 @@ inline void PLANIFICADOR(){
               ch = 0;
               reducirQuantumProceso(MEMORIA,begin.idproceso);
               begin.quantumproceso -= QUANTUM_SYSTEM;
-              cout <<endl<< FG_CYAN<< "Proceso "<<begin.idproceso<<" EJECUTADO!!"<<RESET_COLOR<<endl;
+              cout <<endl<< FG_CYAN<< "Proceso "<<begin.idproceso<<" EJECUTADO!!"<<RESET_COLOR<<endl<<endl;
               if(begin.quantumproceso <= 0){
                   Cola_procesos.erase(Cola_procesos.begin());
                   liberarmemoria(MEMORIA,begin);

@@ -14,6 +14,12 @@ using std::to_string;
 using std::cout; 
 using std::cin;
 
+inline void PresioneTecla(){
+    gotoxy(getmaxX()/2-18,getmaxY()-2);
+    cout<<"Precione cualquier tecla para volver";
+    fflush(stdout);
+    getch();
+}
 
 void recuadro(){
 #if defined(_WIN32)
@@ -46,7 +52,7 @@ void mensajeCentrado(const string mensaje){
   gotoxy(getmaxX()/2 - mensaje.size()/2, getmaxY()/2 + 1);
   cout<<mensaje;fflush(stdout);
   recuadro();
-  delay(2000);
+  PresioneTecla();
   clrscr();
 }
 
@@ -111,13 +117,6 @@ string mensaje;
        mensajeCentrado(cargado);
     }
 return std::stoi(entrada);//se convierte a int
-}
-inline void PresioneTecla(){
-    gotoxy(getmaxX()/2-16,getmaxY()-2);
-    cout<<"Precione cualquier tecla para volver";
-    fflush(stdout);
-    usleep(50000);
-    getch();
 }
 
 

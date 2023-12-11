@@ -279,6 +279,7 @@ int x=0,y=0;
   fflush(stdout);
 }
 void MenuMemoria(){
+ string cargado;
   int seleccion2 = 0;
   bool salida = false;
   clrscr();
@@ -299,18 +300,29 @@ void MenuMemoria(){
       }
       break;
     case KEY_ENTER: //windows
-    case '\n': //nix
       switch (seleccion2) {
       case 0:
         tamano_MEMORIA = 1024;
+        clrscr();
+       cargado="Dato Modificado Correctamente!";
+       cout<<FG_GREEN;
+       mensajeCentrado(cargado);
         salida = true;
         break;
       case 1:
         tamano_MEMORIA = 4096;
+        clrscr();
+       cargado="Dato Modificado Correctamente!";
+       cout<<FG_GREEN;
+       mensajeCentrado(cargado);
         salida = true;
         break;
       case 2:
         tamano_MEMORIA = 8192;
+        clrscr();
+       cargado="Dato Modificado Correctamente!";
+       cout<<FG_GREEN;
+       mensajeCentrado(cargado);
         salida = true;
         break;
       }//seleccion

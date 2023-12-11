@@ -75,11 +75,11 @@ void primer_pantalla() {
   unsigned int x = (getmaxX() / 3) + (ancho_grafico / 3);
   unsigned int y = (getmaxY() / 2) - (altura_grafico / 3);
   logouaa();
-  x = (getmaxX()/3) +20;
+  x = (getmaxX()/3) +18;
   y = (getmaxY() / 2) - (altura_grafico / 3);
 
   gotoxy(x,y++);
-  cout<<FG_BLUE <<"J. Santiago Cortés López\t "<<FG_MAGENTA <<" Materia: Sistemas Operativos"<<RESET_COLOR;
+  cout<<FG_BLUE <<"J. Santiago Cortés López   "<<FG_MAGENTA <<" Materia: Sistemas Operativos"<<RESET_COLOR;
 
   gotoxy(x,y++);
   gotoxy(x,y++);

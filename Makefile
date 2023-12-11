@@ -22,7 +22,7 @@ endif
 #CFLAGS := -O2 -s -w -std=c++17
 CFLAGS := -O3 -s -w -std=c++17 #optimizacion O3
 
-Nombre := Buddy-System_Round-Robin_$(UNAME)
+Nombre := BR_$(UNAME)
 
 $(Nombre): main.cpp compatibilidad.h FuncionesAuxiliares.h FuncionesBuddyRound.h menus.cpp
 	$(CC) -o $(call FixPath,$(Nombre)) $< $(FLAGS) $(CFLAGS)

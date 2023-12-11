@@ -125,14 +125,14 @@ void tercer_pantalla(int seleccion) {
   clrscr();
   flecha_izquierda();
   fflush(stdout);
-  const char *colores[] = {FG_CYAN, FG_MAGENTA, FG_BLUE,FG_GREEN, FG_YELLOW};
-  const char *opciones1[] = {"█▀█ █ █ ▄▀█ █▄ █ ▀█▀ █ █ █▀▄▀█   █▀ █▄█ █▀ ▀█▀ █▀▀ █▀▄▀█",  "█▀█ █ █ ▄▀█ █▄ █ ▀█▀ █ █ █▀▄▀█  █▀█ █▀█ █▀█ █▀▀ █▀▀ █▀ █▀","▀█▀ ▄▀█ █▀▄▀█ ▄▀█ █▄ █ █▀█  █▀█ █▀█ █▀█ █▀▀ █▀▀ █▀ █▀","█▀ █ █▀▄▀█ █ █ █   ▄▀█ █▀▀ █ █▀█ █▄ █","█▀ ▄▀█ █   █ █▀█"};
-  const char *opciones2[] = {"▀▀█ █▄█ █▀█ █ ▀█  █  █▄█ █ ▀ █   ▄█  █  ▄█  █  ██▄ █ ▀ █",  "▀▀█ █▄█ █▀█ █ ▀█  █  █▄█ █ ▀ █  █▀▀ █▀▄ █▄█ █▄▄ ██▄ ▄█ ▄█"," █  █▀█ █ ▀ █ █▀█ █ ▀█ █▄█  █▀▀ █▀▄ █▄█ █▄▄ ██▄ ▄█ ▄█","▄█ █ █ ▀ █ █▄█ █▄▄ █▀█ █▄▄ █ █▄█ █ ▀█","▄█ █▀█ █▄▄ █ █▀▄"};
+  const char *colores[] = {FG_CYAN, FG_MAGENTA, FG_BLUE,FG_GREEN, FG_YELLOW,FG_RED};
+  const char *opciones1[] = {"█▀█ █ █ ▄▀█ █▄ █ ▀█▀ █ █ █▀▄▀█   █▀ █▄█ █▀ ▀█▀ █▀▀ █▀▄▀█", "█▀█ █ █ ▄▀█ █▄ █ ▀█▀ █ █ █▀▄▀█  █▀█ █▀█ █▀█ █▀▀ █▀▀ █▀ █▀","▀█▀ ▄▀█ █▀▄▀█ ▄▀█ █▄ █ █▀█  █▀█ █▀█ █▀█ █▀▀ █▀▀ █▀ █▀","▀█▀ ▄▀█ █▀▄▀█ ▄▀█ █▄ █ █▀█  █▀▄▀█ █▀▀ █▀▄▀█ █▀█ █▀█ █ ▄▀█","█▀ █ █▀▄▀█ █ █ █   ▄▀█ █▀▀ █ █▀█ █▄ █","█▀ ▄▀█ █   █ █▀█"};
+  const char *opciones2[] = {"▀▀█ █▄█ █▀█ █ ▀█  █  █▄█ █ ▀ █   ▄█  █  ▄█  █  ██▄ █ ▀ █", "▀▀█ █▄█ █▀█ █ ▀█  █  █▄█ █ ▀ █  █▀▀ █▀▄ █▄█ █▄▄ ██▄ ▄█ ▄█"," █  █▀█ █ ▀ █ █▀█ █ ▀█ █▄█  █▀▀ █▀▄ █▄█ █▄▄ ██▄ ▄█ ▄█"," █  █▀█ █ ▀ █ █▀█ █ ▀█ █▄█  █ ▀ █ ██▄ █ ▀ █ █▄█ █▀▄ █ █▀█","▄█ █ █ ▀ █ █▄█ █▄▄ █▀█ █▄▄ █ █▄█ █ ▀█","▄█ █▀█ █▄▄ █ █▀▄"};
 
-  const int altura_grafico = 12, ancho_grafico = 66;
+  const int altura_grafico = 20, ancho_grafico = 66;
   int x = (getmaxX() / 2) - (ancho_grafico / 2),y = (getmaxY() / 2) - (altura_grafico/2);
  
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 6; i++) {
     cout<<colores[i];
     if (i == seleccion) {
       gotoxy(x,y++);cout << "    ▀▄  " << opciones1[i];
@@ -169,6 +169,10 @@ void consultardato(int opcion) {
     case 2:
     dato = to_string(tamanoprocesomax);
       mensaje = "El tamaño maximo para los procesos es: "+dato;
+    break;
+    case 3:
+    dato = to_string(tamano_MEMORIA);
+      mensaje = "El tamaño maximo para los procesos es: "+ dato;
     break;
   }
 
@@ -209,6 +213,112 @@ void MenuParametros(int seleccion) {
   fflush(stdout);
 
 }
+void MenuMemoriaTam_G(int seleccion){
+    int ancho_objeto = 9;
+  int espacio_entre_objetos = 5;
+  int x = getmaxX() / 2 - ancho_objeto - espacio_entre_objetos -3;
+  int y = getmaxY()/2 -3;
+  if(seleccion==0){cout<<FG_RED;}else{cout<<FG_BLUE;}
+  gotoxy(x, y++);
+  cout << "   ███   ";gotoxy(x, y++);
+  cout << " █████   ";gotoxy(x, y++);
+  cout << "    ██   ";gotoxy(x, y++);
+  cout << "    ██   ";gotoxy(x, y++);
+  cout << "    ██   ";gotoxy(x, y++);
+  cout << "    ██   ";gotoxy(x, y++);
+  cout << "  ██████ "<<RESET_COLOR;
+  y = getmaxY()/2 -3;
+  x =getmaxX()/2-3;
+  if(seleccion==1){cout<<FG_RED;}else{cout<<FG_BLUE;}
+  gotoxy(x, y++);
+  cout << "██     ██";gotoxy(x, y++);
+  cout << "██     ██";gotoxy(x, y++);
+  cout << "██     ██";gotoxy(x, y++);
+  cout << " ███████ ";gotoxy(x, y++);
+  cout << "       ██";gotoxy(x, y++);
+  cout << "       ██";gotoxy(x, y++);
+  cout << "       ██"<<RESET_COLOR;
+  y = getmaxY()/2 -3;
+  x = getmaxX()/2 + ancho_objeto + espacio_entre_objetos -3;
+  if(seleccion==2){cout<<FG_RED;}else{cout<<FG_BLUE;}
+  gotoxy(x, y++);
+  cout << " ███████ ";gotoxy(x, y++);
+  cout << "██     ██";gotoxy(x, y++);
+  cout << "██     ██";gotoxy(x, y++);
+  cout << " ███████ ";gotoxy(x, y++);
+  cout << "██     ██";gotoxy(x, y++);
+  cout << "██     ██";gotoxy(x, y++);
+  cout << " ███████ "<<RESET_COLOR;
+}
+void MenuMemoriaTam_F(int x, int y){
+  gotoxy(x,y++);cout<<FG_RED;
+  cout<<"  █  ";gotoxy(x,y++);
+  cout<<" ███ ";gotoxy(x,y++);
+  cout<<"█ █ █";gotoxy(x,y++);
+  cout<<"  █  ";gotoxy(x,y++);
+  cout<<"  █  ";gotoxy(x,y++);
+  cout<<"  █  " <<RESET_COLOR ;
+}
+ void MenuMemoriaTam(int seleccion) {
+  clrscr();
+  cout<<FG_BLUE;
+  MenuMemoriaTam_G(seleccion);
+int x=0,y=0;
+  switch (seleccion) {
+  case 0:
+    x=getmaxX() / 2 - 14;y= getmaxY() / 2 + 7;
+    break;
+  case 1:
+    x=getmaxX() / 2;y= getmaxY() / 2 + 7;
+    break;
+  case 2:
+    x=getmaxX() / 2 + 14; y=getmaxY() / 2 + 7;
+    break;
+  }
+  MenuMemoriaTam_F(x,y);
+  fflush(stdout);
+}
+void MenuMemoria(){
+  int seleccion2 = 0;
+  bool salida = false;
+  clrscr();
+  int x=getmaxX()/2-(35/2);
+  int y=getmaxY()/2-1;
+
+  while (salida == false) {
+    MenuMemoriaTam(seleccion2);
+    switch (getch()) {
+    case KEY_LEFT:
+      if (seleccion2 > 0) {
+        seleccion2--;
+      }
+      break;
+    case KEY_RIGHT:
+      if (seleccion2 < 2) {
+        seleccion2++;
+      }
+      break;
+    case KEY_ENTER: //windows
+    case '\n': //nix
+      switch (seleccion2) {
+      case 0:
+        tamano_MEMORIA = 1024;
+        salida = true;
+        break;
+      case 1:
+        tamano_MEMORIA = 4096;
+        salida = true;
+        break;
+      case 2:
+        tamano_MEMORIA = 8192;
+        salida = true;
+        break;
+      }//seleccion
+      clrscr();//arregla un error
+      break;
+    }//switch
+  }
+}
 void Parametros(int opcion){
   int seleccion = 0;
 
@@ -236,6 +346,8 @@ void Parametros(int opcion){
                case 1: consultardato(1);break;
 
                case 2: consultardato(2);break;
+               
+               case 3: consultardato(3);break;
              }
             break;
           case 1:
@@ -245,6 +357,8 @@ void Parametros(int opcion){
                case 1:  quantumprocesomax = validarEntradaInt(1);break;
 
                case 2:  tamanoprocesomax = validarEntradaInt(2);break;
+              
+               case 3: MenuMemoria();   break;
              }
           break;
           case 2: //salir
@@ -255,18 +369,11 @@ void Parametros(int opcion){
       }// getch
     }//while
 }
-void generarprocesos(){
-  int id_procesos = 0;
-  for(int i=0;i<1000;i++){
-     PROCESO proceso = generar_proceso(id_procesos);
-     Cola_lista.push_back(proceso);
-   }
-}
+
 
 
 void menus(){
  int pantalla = 1, seleccion = 0;
- int id_procesos = 0;
 
   bool salir = false;
   while (!salir) {
@@ -301,7 +408,7 @@ void menus(){
 
           break;
       case KEY_DOWN:
-          if (pantalla == 3 && seleccion < 4) {
+          if (pantalla == 3 && seleccion < 5) {
             seleccion++;
           }
           break;
@@ -317,12 +424,14 @@ void menus(){
           case 2:
                Parametros(2);
           break;
-          case 3:       
-               generarprocesos();
+          case 3:
+               Parametros(3);
+          break;
+          case 4:       
                PLANIFICADOR();
                //delete(MEMORIA); //esto daba seg fault
           break;
-          case 4: //salir
+          case 5: //salir
             endCompat();
             exit(0);
             break;

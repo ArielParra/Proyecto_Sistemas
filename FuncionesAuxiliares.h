@@ -68,7 +68,7 @@ string mensaje;
     switch(opcion){
       case 0: mensaje = "Ingrese el QUANTUM DEL SISTEMA(MAXIMO): ";break;
       case 1: mensaje = "Ingrese el QUANTUM DEL PROCESO(MAXIMO): ";break;
-      case 2: mensaje = "Ingrese el TAMAÑO DEL PROCESO(MAXIMO): ";break;
+      case 2: mensaje = "Ingrese el TAMAÑO DEL PROCESO(MAXIMO) en KB: ";break;
       case 3: mensaje = "Ingrese el intervalo de tiempo de la simulación 2 en ms: ";break;
     }
     
@@ -103,7 +103,7 @@ string mensaje;
       if (esValido && opcion!=3){
         if(std::stoi(entrada)>tamano_MEMORIA){
           esValido = false;
-          error="Error: Excede el tamaño de memoria de "+ to_string(tamano_MEMORIA) + "MB";
+          error="Error: Excede el tamaño de memoria de "+ to_string(tamano_MEMORIA) + "KB";
         }
       }
       if (esValido && opcion==3){

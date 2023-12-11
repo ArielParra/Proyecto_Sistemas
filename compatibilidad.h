@@ -248,7 +248,7 @@ void clrscr() { printf(CLEAR_SCREEN);fflush(stdout); }
         refresh();            // actualiza la pantalla
         if(getmaxX()<145 || getmaxY()<27){
             endCompat();
-            std::cout<<"ERROR: Debes poner la pantalla completa porfavor";
+            std::cout<<"ERROR: Debes poner la pantalla completa porfavor\n";
             exit(0);
         }
     }

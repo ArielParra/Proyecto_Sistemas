@@ -177,7 +177,7 @@ void consultardato(int opcion) {
     break;
     case 4:
         dato = to_string(intervalo_Tiempo);
-      mensaje = "El intervalo de tiempo de la simulación en ms es: "+ dato;
+      mensaje = "El intervalo de tiempo de la simulación2 en ms es: "+ dato;
     break;
   }
 

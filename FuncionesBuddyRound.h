@@ -359,7 +359,6 @@ inline void PLANIFICADOR2(int ms){
    unsigned int id_procesos = 0;
     unsigned int atendidos = 0;
     unsigned int memoriausada= 0;
-    bool entradasdedatos = true;
     inicializarMemoria();
     generarprocesos();
     reset_shell_mode();

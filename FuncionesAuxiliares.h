@@ -119,5 +119,21 @@ string mensaje;
 return std::stoi(entrada);//se convierte a int
 }
 
+bool continuar(){
+while(true){    
+    reset_prog_mode();
+    int ch=getch();
+    reset_shell_mode();
+        switch(ch){
+            case KEY_UP:
+                return false;
+                break;
+            case KEY_ENTER:
+                return true;
+            default:
+                break;
+        }
+    }
+}
 
 #endif //FuncionesAuxiliares_h

@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <iomanip>
 #include "compatibilidad.h"
+#include "FuncionesAuxiliares.h"
 using namespace std;
 
 int tamano_MEMORIA = 1024; 
@@ -236,14 +237,12 @@ inline void PLANIFICADOR(){
         PROCESO PorEntrar = Cola_lista[i];
 
         cout <<endl<<FG_BLUE<< "Proceso por entrar: "<<"("<<PorEntrar.idproceso<<","<<PorEntrar.tamano<<","<<PorEntrar.quantumproceso<<")"<<RESET_COLOR<<endl;
-            cout << endl << "Presione enter para continuar" << endl;
-        do{
-            reset_prog_mode();
-            ch = getch();
-            reset_shell_mode();
-            if(ch ==KEY_UP){salida = false;break;}
-        }while(ch!=KEY_ENTER);
-        ch = 0;
+        
+        cout << endl << "Presione enter para continuar" << endl;
+        if(!continuar()){
+            salida = false; break;
+        }
+
         if(asignarMemoria(PorEntrar,MEMORIA)){
             cout <<endl<<FG_YELLOW<< "El proceso logro ser asignado en memoria!!"<<RESET_COLOR<<endl;
             Cola_procesos.push_back(PorEntrar);
@@ -255,13 +254,9 @@ inline void PLANIFICADOR(){
             imprimir_procesos();
             cout << endl<<FG_RED<<"Proceso a ejecutar: "<<FG_YELLOW<<"("<<begin.idproceso<<","<<begin.tamano<<","<<begin.quantumproceso<<")"<<RESET_COLOR<<endl;
             cout << endl << "Presione enter para continuar" << endl;
-              do{
-            reset_prog_mode();
-            ch = getch();
-            reset_shell_mode();
-            if(ch ==KEY_UP){salida = false;break;}
-        }while(ch!=KEY_ENTER);
-             ch = 0;
+            if(!continuar()){
+                salida = false; break;
+            }
             reducirQuantumProceso(MEMORIA,begin.idproceso);
             begin.quantumproceso -= QUANTUM_SYSTEM;
 
@@ -291,14 +286,10 @@ inline void PLANIFICADOR(){
               cout <<endl<<FG_MAGENTA<< "Lista de procesos "<<RESET_COLOR<<endl<<endl;
               imprimir_procesos();
               cout << endl<< FG_RED<<"Proceso a ejecutar: "<<FG_YELLOW<<"("<<begin.idproceso<<","<<begin.tamano<<","<<begin.quantumproceso<<")"<<RESET_COLOR<<endl;
-            cout << endl << "Presione enter para continuar" << endl;
-              do{
-            reset_prog_mode();
-            ch = getch();
-            reset_shell_mode();
-            if(ch ==KEY_UP){salida = false;break;}
-        }while(ch!=KEY_ENTER);
-              ch = 0;
+              cout << endl << "Presione enter para continuar" << endl;
+              if(!continuar()){
+                salida = false; break;
+              }
               reducirQuantumProceso(MEMORIA,begin.idproceso);
               begin.quantumproceso -= QUANTUM_SYSTEM;
               cout <<endl<< FG_CYAN<< "Proceso "<<begin.idproceso<<" EJECUTADO!!"<<RESET_COLOR<<endl<<endl;

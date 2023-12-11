@@ -239,11 +239,11 @@ inline void PLANIFICADOR(int ms,bool tiempo){
         if(tiempo){
             delay(ms);
             if(kbhit()){
-            cout << endl << "Presione enter para continuar" << endl;
+            cout << endl << "Presione enter para continuar o flecha arriba para salir" << endl;
             if(!continuar()){salida = false; break;}
             }
         }else{
-            cout << endl << "Presione enter para continuar" << endl;
+            cout << endl << "Presione enter para continuar o flecha arriba para salir" << endl;
             if(!continuar()){salida = false; break;}
         }
         
@@ -261,11 +261,11 @@ inline void PLANIFICADOR(int ms,bool tiempo){
             if(tiempo){
             delay(ms);
             if(kbhit()){
-            cout << endl << "Presione enter para continuar" << endl;
+            cout << endl << "Presione enter para continuar o flecha arriba para salir" << endl;
             if(!continuar()){salida = false; break;}
             }
         }else{
-            cout << endl << "Presione enter para continuar" << endl;
+            cout << endl << "Presione enter para continuar o flecha arriba para salir" << endl;
             if(!continuar()){salida = false; break;}
         }
 
@@ -302,11 +302,11 @@ inline void PLANIFICADOR(int ms,bool tiempo){
                if(tiempo){
             delay(ms);
             if(kbhit()){
-            cout << endl << "Presione enter para continuar" << endl;
+            cout << endl << "Presione enter para continuar o flecha arriba para salir" << endl;
             if(!continuar()){salida = false; break;}
             }
         }else{
-            cout << endl << "Presione enter para continuar" << endl;
+            cout << endl << "Presione enter para continuar o flecha arriba para salir" << endl;
             if(!continuar()){salida = false; break;}
         }
               reducirQuantumProceso(MEMORIA,begin.idproceso);

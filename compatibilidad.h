@@ -196,7 +196,6 @@ void clrscr() { printf(CLEAR_SCREEN);fflush(stdout); }
         ioctl(0, FIONREAD, &byteswaiting);
 
         tcsetattr(0, TCSANOW, &term);
-
         return byteswaiting > 0;
     }
 

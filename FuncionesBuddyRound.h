@@ -356,7 +356,10 @@ inline void PLANIFICADOR(int ms,bool tiempo){
 // ESTE ES EL PLANIFICADOR ROUND ROBIN
 inline void PLANIFICADOR2(int ms){
     clrscr();
-    unsigned int id_procesos = 0;
+   unsigned int id_procesos = 0;
+    unsigned int atendidos = 0;
+    unsigned int memoriausada= 0;
+    bool entradasdedatos = true;
     inicializarMemoria();
     generarprocesos();
     reset_shell_mode();
@@ -484,6 +487,9 @@ inline void PLANIFICADOR2(int ms){
               }
         }
     }
+    float memoriaporcentajeusado = (memoriausada*100)/tamano_MEMORIA;
+    cout << FG_BLUE;
+    estadisticas(atendidos,memoriaporcentajeusado);
     Cola_procesos.clear();
     Cola_lista.clear();
     delete(MEMORIA);

@@ -222,14 +222,15 @@ void MenuSimulacionG(int seleccion) {
   /*tercer Pantalla*/
   clrscr();
   fflush(stdout);
-  const char *colores[] = {FG_CYAN, FG_MAGENTA, FG_BLUE};
-  const char *opciones1[] = {"█▀ █ █▀▄▀█ █ █ █   ▄▀█ █▀▀ █ █▀█ █▄ █   ▄█","█▀ █ █▀▄▀█ █ █ █   ▄▀█ █▀▀ █ █▀█ █▄ █   ▀█","█▀ ▄▀█ █   █ █▀█"};
-  const char *opciones2[] = {"▄█ █ █ ▀ █ █▄█ █▄▄ █▀█ █▄▄ █ █▄█ █ ▀█    █","▄█ █ █ ▀ █ █▄█ █▄▄ █▀█ █▄▄ █ █▄█ █ ▀█   █▄","▄█ █▀█ █▄▄ █ █▀▄"};
+  const char *colores[] = {FG_CYAN, FG_MAGENTA, FG_BLUE,FG_RED};
+  const char *opciones1[] = {"█▀ █ █▀▄▀█ █ █ █   ▄▀█ █▀▀ █ █▀█ █▄ █   █▀█","█▀ █ █▀▄▀█ █ █ █   ▄▀█ █▀▀ █ █▀█ █▄ █   ▄█","█▀ █ █▀▄▀█ █ █ █   ▄▀█ █▀▀ █ █▀█ █▄ █   ▀█","█▀ ▄▀█ █   █ █▀█"};
+  const char *opciones2[] = {"▄█ █ █ ▀ █ █▄█ █▄▄ █▀█ █▄▄ █ █▄█ █ ▀█   █▄█","▄█ █ █ ▀ █ █▄█ █▄▄ █▀█ █▄▄ █ █▄█ █ ▀█    █","▄█ █ █ ▀ █ █▄█ █▄▄ █▀█ █▄▄ █ █▄█ █ ▀█   █▄","▄█ █▀█ █▄▄ █ █▀▄"};
   
-  const int altura_grafico = 8, ancho_grafico = 44;
+  
+  const int altura_grafico = 10, ancho_grafico = 44;
   int x = (getmaxX() / 2) - (ancho_grafico / 2),y = (getmaxY() / 2) - (altura_grafico/2);
  
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < 4; i++) {
     cout<<colores[i];
     if (i == seleccion) {
       gotoxy(x,y++);cout << "    ▀▄  " << opciones1[i];
@@ -326,7 +327,7 @@ void menusimulacion(){
 
           break;
       case KEY_DOWN:
-          if (seleccion < 2) {
+          if (seleccion < 3) {
             seleccion++;
           }
           break;
@@ -338,7 +339,10 @@ void menusimulacion(){
           case 1:
              PLANIFICADOR(intervalo_Tiempo,true);
           break;
-          case 2: //salir
+          case 2:
+             PLANIFICADOR2(intervalo_Tiempo);
+             break;
+          case 3: //salir
             salir = true;
             break;
           }

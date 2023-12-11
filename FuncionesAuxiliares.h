@@ -57,6 +57,31 @@ void mensajeCentrado(const string mensaje){
   PresioneTecla();
   clrscr();
 }
+void estadisticas(unsigned int atendidos,float memoriaporcentajeusada){
+  clrscr();
+
+gotoxy(getmaxX()/2 - 44,getmaxY()/2 -9);
+gotoxy(getmaxX()/2 - 44,getmaxY()/2 -8);cout<<"███████╗ ██████╗████████╗ █████╗ ██████╗ ██╗ ██████╗████████╗██╗ █████╗  █████╗  ██████╗";
+gotoxy(getmaxX()/2 - 44,getmaxY()/2 -7);cout<<"██╔════╝██╔════╝╚══██╔══╝██╔══██╗██╔══██╗██║██╔════╝╚══██╔══╝██║██╔══██╗██╔══██╗██╔════╝";
+gotoxy(getmaxX()/2 - 44,getmaxY()/2 -6);cout<<"█████╗  ╚█████╗    ██║   ███████║██║  ██║██║╚█████╗    ██║   ██║██║  ╚═╝███████║╚█████╗ ";
+gotoxy(getmaxX()/2 - 44,getmaxY()/2 -5);cout<<"██╔══╝   ╚═══██╗   ██║   ██╔══██║██║  ██║██║ ╚═══██╗   ██║   ██║██║  ██╗██╔══██║ ╚═══██╗";
+gotoxy(getmaxX()/2 - 44,getmaxY()/2 -4);cout<<"███████╗██████╔╝   ██║   ██║  ██║██████╔╝██║██████╔╝   ██║   ██║╚█████╔╝██║  ██║██████╔╝";
+gotoxy(getmaxX()/2 - 44,getmaxY()/2 -3);cout<<"╚══════╝╚═════╝    ╚═╝   ╚═╝  ╚═╝╚═════╝ ╚═╝╚═════╝    ╚═╝   ╚═╝ ╚════╝ ╚═╝  ╚═╝╚═════╝ ";
+  gotoxy(getmaxX()/2 - 12 , getmaxY()/2);
+  cout <<FG_YELLOW<<memoriaporcentajeusada<<"% "<<FG_BLUE<<" De Memoria Usada";
+  gotoxy(getmaxX()/2 - 12, getmaxY()/2+1);
+  if(atendidos==1){
+    cout <<FG_YELLOW<<atendidos<<FG_BLUE<<" Proceso Atendido";
+  }else{
+    cout <<FG_YELLOW<<atendidos<<FG_BLUE" Procesos Atendidos";
+  }
+  cout << RESET_COLOR;
+  fflush(stdout);
+  cout << FG_BLUE;
+  recuadro();
+  PresioneTecla();
+  clrscr();
+}
 
 unsigned int validarEntradaInt(int opcion){
 //funcion auxiliar para validar entrada de numeros
@@ -128,7 +153,7 @@ string mensaje;
 return std::stoi(entrada);//se convierte a int
 }
 
-bool continuar(){
+bool continuar(bool &entradasdedatos){
 while(true){    
     reset_prog_mode();
     int ch=getch();
@@ -140,6 +165,10 @@ while(true){
             case KEY_ENTER:
                 return true;
                 break;
+            case 'c':entradasdedatos=false;
+            break;
+            case 'C':entradasdedatos=false;
+            break;
             default:
                 break;
         }

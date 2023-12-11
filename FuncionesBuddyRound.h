@@ -347,7 +347,9 @@ inline void PLANIFICADOR(int ms,bool tiempo){
     }
     float memoriaporcentajeusado = (memoriausada*100)/tamano_MEMORIA;
     cout << FG_BLUE;
+    if(atendidos>1000){atendidos=1000;}
     estadisticas(atendidos,memoriaporcentajeusado);
+
     Cola_procesos.clear();
     Cola_lista.clear();
     delete(MEMORIA);
@@ -368,7 +370,7 @@ inline void PLANIFICADOR2(int ms){
     bool entradasdedatos=true;
     while(salida){
 
-        if(Cola_procesos.empty()){
+        if(i>=Cola_lista.size()){
                  salida = false;
         }
         clrscr();
@@ -414,6 +416,7 @@ inline void PLANIFICADOR2(int ms){
            
             //Si el proceso es mayor que 0 quiere decir que todavia no ha acabado
             if(begin.quantumproceso <= 0){
+                atendidos+=1;
                 Cola_procesos.erase(Cola_procesos.begin());
                 liberarmemoria(MEMORIA,begin);
                 fusionarBloquesContiguos(MEMORIA,false);
@@ -425,11 +428,6 @@ inline void PLANIFICADOR2(int ms){
             i+=1;
 
         }else{
-
-              if(Cola_procesos.empty()){
-                 salida = false;
-              }
-               
   
               PROCESO begin = Cola_procesos.front();
               
@@ -451,6 +449,7 @@ inline void PLANIFICADOR2(int ms){
             reducirQuantumProceso(MEMORIA,begin.idproceso);
             begin.quantumproceso -= QUANTUM_SYSTEM;
               if(begin.quantumproceso <= 0){
+                  atendidos+=1;
                   Cola_procesos.erase(Cola_procesos.begin());
                   liberarmemoria(MEMORIA,begin);
                   fusionarBloquesContiguos(MEMORIA,false);
@@ -462,6 +461,10 @@ inline void PLANIFICADOR2(int ms){
               }
         }
         }else{
+
+             if(Cola_procesos.empty()){
+                 salida = false;
+              }
               PROCESO begin = Cola_procesos.front();
              
               cout << endl<< FG_RED<<"Proceso a ejecutar: "<<FG_YELLOW<<"("<<begin.idproceso<<","<<begin.tamano<<","<<begin.quantumproceso<<")"<<RESET_COLOR<<endl;
@@ -475,6 +478,7 @@ inline void PLANIFICADOR2(int ms){
             reducirQuantumProceso(MEMORIA,begin.idproceso);
             begin.quantumproceso -= QUANTUM_SYSTEM;
               if(begin.quantumproceso <= 0){
+                  atendidos+=1;
                   Cola_procesos.erase(Cola_procesos.begin());
                   liberarmemoria(MEMORIA,begin);
                   fusionarBloquesContiguos(MEMORIA,false);
@@ -488,6 +492,7 @@ inline void PLANIFICADOR2(int ms){
     }
     float memoriaporcentajeusado = (memoriausada*100)/tamano_MEMORIA;
     cout << FG_BLUE;
+      if(atendidos>1000){atendidos=1000;}
     estadisticas(atendidos,memoriaporcentajeusado);
     Cola_procesos.clear();
     Cola_lista.clear();

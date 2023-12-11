@@ -129,6 +129,9 @@ string mensaje;
         if(std::stoi(entrada)>tamano_MEMORIA){
           esValido = false;
           error="Error: Excede el tamaño de memoria de "+ to_string(tamano_MEMORIA) + "KB";
+        }else if(stoi(entrada)<=0){
+          error="Error: El tamaño tiene que ser mayor a 0";
+          esValido=false;
         }
       }
       if (esValido && opcion==3){

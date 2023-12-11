@@ -218,6 +218,34 @@ void MenuParametros(int seleccion) {
   fflush(stdout);
 
 }
+void MenuSimulacionG(int seleccion) {
+  /*tercer Pantalla*/
+  clrscr();
+  fflush(stdout);
+  const char *colores[] = {FG_CYAN, FG_MAGENTA, FG_BLUE};
+  const char *opciones1[] = {"█▀ █ █▀▄▀█ █ █ █   ▄▀█ █▀▀ █ █▀█ █▄ █   ▄█","█▀ █ █▀▄▀█ █ █ █   ▄▀█ █▀▀ █ █▀█ █▄ █   ▀█","█▀ ▄▀█ █   █ █▀█"};
+  const char *opciones2[] = {"▄█ █ █ ▀ █ █▄█ █▄▄ █▀█ █▄▄ █ █▄█ █ ▀█    █","▄█ █ █ ▀ █ █▄█ █▄▄ █▀█ █▄▄ █ █▄█ █ ▀█   █▄","▄█ █▀█ █▄▄ █ █▀▄"};
+  
+  const int altura_grafico = 8, ancho_grafico = 44;
+  int x = (getmaxX() / 2) - (ancho_grafico / 2),y = (getmaxY() / 2) - (altura_grafico/2);
+ 
+  for (int i = 0; i < 3; i++) {
+    cout<<colores[i];
+    if (i == seleccion) {
+      gotoxy(x,y++);cout << "    ▀▄  " << opciones1[i];
+      gotoxy(x,y++);cout << "▀▀▀▀▀█▀ " << opciones2[i];
+      gotoxy(x,y++);cout << "    ▀   " <<RESET_COLOR;
+      gotoxy(x,y++);
+    } else {
+      gotoxy(x,y++);cout << "        " << opciones1[i]; 
+      gotoxy(x,y++);cout << "        " <<opciones2[i];
+      gotoxy(x,y++);cout << "        " <<RESET_COLOR;
+      gotoxy(x,y++);
+    }
+  }
+  fflush(stdout);
+
+}
 void MenuMemoriaTam_G(int seleccion){
     int ancho_objeto = 9;
   int espacio_entre_objetos = 5;
@@ -282,6 +310,93 @@ int x=0,y=0;
   }
   MenuMemoriaTam_F(x,y);
   fflush(stdout);
+}
+void MenuMemoria(){
+ string cargado;
+  int seleccion2 = 0;
+  bool salida = false;
+  clrscr();
+  int x=getmaxX()/2-(35/2);
+  int y=getmaxY()/2-1;
+
+  while (salida == false) {
+    MenuMemoriaTam(seleccion2);
+    switch (getch()) {
+    case KEY_LEFT:
+      if (seleccion2 > 0) {
+        seleccion2--;
+      }
+      break;
+    case KEY_RIGHT:
+      if (seleccion2 < 2) {
+        seleccion2++;
+      }
+      break;
+    case KEY_ENTER: //windows
+      switch (seleccion2) {
+      case 0:
+        tamano_MEMORIA = 1024;
+        clrscr();
+       cargado="Dato Modificado Correctamente!";
+       cout<<FG_GREEN;
+       mensajeCentrado(cargado);
+        salida = true;
+        break;
+      case 1:
+        tamano_MEMORIA = 4096;
+        clrscr();
+       cargado="Dato Modificado Correctamente!";
+       cout<<FG_GREEN;
+       mensajeCentrado(cargado);
+        salida = true;
+        break;
+      case 2:
+        tamano_MEMORIA = 8192;
+        clrscr();
+       cargado="Dato Modificado Correctamente!";
+       cout<<FG_GREEN;
+       mensajeCentrado(cargado);
+        salida = true;
+        break;
+      }//seleccion
+      clrscr();//arregla un error
+      break;
+    }//switch
+  }
+}
+void menusimulacion(){
+  int seleccion = 0;
+
+  bool salir = false;
+  while (!salir) {
+    MenuSimulacionG(seleccion);
+    switch (getch()) {
+      case KEY_UP:
+          if (seleccion > 0) {
+            seleccion--;
+          }
+
+          break;
+      case KEY_DOWN:
+          if (seleccion < 2) {
+            seleccion++;
+          }
+          break;
+      case KEY_ENTER:
+          switch (seleccion) {
+          case 0: 
+             PLANIFICADOR(intervalo_Tiempo,false);
+             break;
+          case 1:
+             PLANIFICADOR(intervalo_Tiempo,true);
+          break;
+          case 2: //salir
+            salir = true;
+            break;
+          }
+      break;
+      }// getch
+    }//while
 }
 void MenuMemoria(){
  string cargado;
@@ -452,6 +567,7 @@ void menus(){
               Parametros(4);
           break;       
           case 5:    
+           menusimulacion();
            PLANIFICADOR(intervalo_Tiempo);
                //delete(MEMORIA); //esto daba seg fault
           break;

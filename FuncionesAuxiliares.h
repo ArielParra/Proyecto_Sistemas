@@ -18,7 +18,7 @@ using std::cin;
 
 inline void PresioneTecla(){
     gotoxy(getmaxX()/2-18,getmaxY()-2);
-    cout<<"Precione la tecla espacio para volver";
+    cout<<"Presione la tecla espacio para volver";
     fflush(stdout);
     getch();
 }

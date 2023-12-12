@@ -248,11 +248,11 @@ inline void PLANIFICADOR(int ms,bool tiempo){
         if(tiempo){
             delay(ms);
             if(kbhit()){
-            cout << endl << "Presione enter para continuar o flecha arriba para salir" << endl;
+            cout << endl << "Presione enter para continuar o tecla 'p' para salir" << endl;
             if(!continuar(entradasdedatos)){salida = false; break;}
             }
         }else{
-            cout << endl << "Presione enter para continuar o flecha arriba para salir" << endl;
+            cout << endl << "Presione enter para continuar o tecla 'p' para salir" << endl;
             if(!continuar(entradasdedatos)){salida = false; break;}
         }
         
@@ -272,11 +272,11 @@ inline void PLANIFICADOR(int ms,bool tiempo){
             if(tiempo){
             delay(ms);
             if(kbhit()){
-            cout << endl << "Presione enter para continuar o flecha arriba para salir" << endl;
+            cout << endl << "Presione enter para continuar o tecla 'p' para salir" << endl;
             if(!continuar(entradasdedatos)){salida = false; break;}
             }
         }else{
-            cout << endl << "Presione enter para continuar o flecha arriba para salir" << endl;
+            cout << endl << "Presione enter para continuar o tecla 'p' para salir" << endl;
             if(!continuar(entradasdedatos)){salida = false; break;}
         }
             cout <<endl<<FG_CYAN<< "Proceso "<<begin.idproceso<<" EJECUTADO!!"<<endl<<endl;
@@ -316,11 +316,11 @@ inline void PLANIFICADOR(int ms,bool tiempo){
                if(tiempo){
             delay(ms);
             if(kbhit()){
-            cout << endl << "Presione enter para continuar o flecha arriba para salir" << endl;
+            cout << endl << "Presione enter para continuar o tecla 'p' para salir" << endl;
             if(!continuar(entradasdedatos)){salida = false; break;}
             }
         }else{
-            cout << endl << "Presione enter para continuar o flecha arriba para salir" << endl;
+            cout << endl << "Presione enter para continuar o tecla 'p' para salir" << endl;
             if(!continuar(entradasdedatos)){salida = false; break;}
         }
                cout <<endl<<FG_CYAN<< "Proceso "<<begin.idproceso<<" EJECUTADO!!"<<endl;
@@ -389,7 +389,7 @@ inline void PLANIFICADOR2(int ms){
 
         delay(ms);
             if(kbhit()){
-            cout << endl << "Presione enter para continuar o flecha arriba para salir" << endl;
+            cout << endl << "Presione enter para continuar o tecla 'p' para salir" << endl;
             if(!continuar(entradasdedatos)){salida = false; break;}
             }
         if(entradasdedatos){
@@ -408,7 +408,7 @@ inline void PLANIFICADOR2(int ms){
 
              delay(ms);
             if(kbhit()){
-            cout << endl << "Presione enter para continuar o flecha arriba para salir" << endl;
+            cout << endl << "Presione enter para continuar o tecla 'p' para salir" << endl;
             if(!continuar(entradasdedatos)){salida = false; break;}
             }
             
@@ -444,7 +444,7 @@ inline void PLANIFICADOR2(int ms){
               
             delay(ms);
             if(kbhit()){
-            cout << endl << "Presione enter para continuar o flecha arriba para salir" << endl;
+            cout << endl << "Presione enter para continuar o tecla 'p' para salir" << endl;
             if(!continuar(entradasdedatos)){salida = false; break;}
             }
            
@@ -474,7 +474,7 @@ inline void PLANIFICADOR2(int ms){
               
             delay(ms);
             if(kbhit()){
-            cout << endl << "Presione enter para continuar o flecha arriba para salir" << endl;
+            cout << endl << "Presione enter para continuar o tecla 'p' para salir" << endl;
             if(!continuar(entradasdedatos)){salida = false; break;}
             }
            

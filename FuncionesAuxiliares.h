@@ -162,15 +162,18 @@ while(true){
     int ch=getch();
     reset_shell_mode();
         switch(ch){
-            case KEY_UP:
+            case 'p':
+                return false;
+                break;
+            case 'P':
                 return false;
                 break;
             case KEY_ENTER:
                 return true;
                 break;
-            case 'c':entradasdedatos=false;
+            case 'c':entradasdedatos= !entradasdedatos;
             break;
-            case 'C':entradasdedatos=false;
+            case 'C':entradasdedatos= !entradasdedatos;
             break;
             default:
                 break;

@@ -13,8 +13,8 @@
 using namespace std;
 
 unsigned int QUANTUM_SYSTEM = 2;
-unsigned int tamanoprocesomax = 1024;
-unsigned int quantumprocesomax = 4;
+unsigned int tamanoprocesomax = 50;
+unsigned int quantumprocesomax = 10;
 
 
 //Esto representara un proceso
@@ -394,6 +394,7 @@ inline void PLANIFICADOR2(int ms){
             }
         if(entradasdedatos){
         if(asignarMemoria(PorEntrar,MEMORIA)){
+            memoriausada += PorEntrar.tamano;
             Cola_procesos.push_back(PorEntrar);
             PROCESO begin = Cola_procesos.front();
              clrscr();
@@ -416,6 +417,7 @@ inline void PLANIFICADOR2(int ms){
            
             //Si el proceso es mayor que 0 quiere decir que todavia no ha acabado
             if(begin.quantumproceso <= 0){
+                memoriausada -= begin.tamano;
                 atendidos+=1;
                 Cola_procesos.erase(Cola_procesos.begin());
                 liberarmemoria(MEMORIA,begin);
@@ -428,7 +430,7 @@ inline void PLANIFICADOR2(int ms){
             i+=1;
 
         }else{
-  
+         
               PROCESO begin = Cola_procesos.front();
               
               clrscr();
@@ -449,6 +451,7 @@ inline void PLANIFICADOR2(int ms){
             reducirQuantumProceso(MEMORIA,begin.idproceso);
             begin.quantumproceso -= QUANTUM_SYSTEM;
               if(begin.quantumproceso <= 0){
+                  memoriausada-= begin.tamano;
                   atendidos+=1;
                   Cola_procesos.erase(Cola_procesos.begin());
                   liberarmemoria(MEMORIA,begin);
@@ -464,7 +467,7 @@ inline void PLANIFICADOR2(int ms){
 
              if(Cola_procesos.empty()){
                  salida = false;
-              }
+              }else{
               PROCESO begin = Cola_procesos.front();
              
               cout << endl<< FG_RED<<"Proceso a ejecutar: "<<FG_YELLOW<<"("<<begin.idproceso<<","<<begin.tamano<<","<<begin.quantumproceso<<")"<<RESET_COLOR<<endl;
@@ -478,6 +481,7 @@ inline void PLANIFICADOR2(int ms){
             reducirQuantumProceso(MEMORIA,begin.idproceso);
             begin.quantumproceso -= QUANTUM_SYSTEM;
               if(begin.quantumproceso <= 0){
+                  memoriausada -= begin.tamano;
                   atendidos+=1;
                   Cola_procesos.erase(Cola_procesos.begin());
                   liberarmemoria(MEMORIA,begin);
@@ -487,6 +491,7 @@ inline void PLANIFICADOR2(int ms){
               Cola_procesos.erase(Cola_procesos.begin());
               //ESTA LINEA REPRESENTA QUE EL PROCESO SE ESTA EJECUTANDO
               Cola_procesos.push_back(begin);
+              }
               }
         }
     }
